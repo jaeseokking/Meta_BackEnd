@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0/*EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="main_mapper">
+
+	<!--로그인  -->
+	<select id="login" parameterType="map" resultType="map">
+		SELECT MEMBER_BIZNO FROM TB_MEMBER
+		where  MEMBER_BIZNO = #{SHOP_BIZNO} and PASSWORD = #{PASSWORD}
+	</select>
+	
+	<!-- 회원 총 리스트 개수  -->
+	<select id="totalcounts" parameterType="map" resultType="int">
+		select count(*) from TB_RECEIPT_ISSUE where SHOP_BIZNO = #{shop_bizno} 
+		<if test="startDate != 0 and endDate != 0">
+			and FRT_CREA_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
+		</if>
+		<if test="!'all'.equals(selectUse) and selectUse != null">
+			and CARWASHYN = #{selectUse}
+		</if>
+	</select> 
+	
+	<!-- 세차권 리스트 가져오기  -->
+	<select id="CWlist" parameterType="map" resultType="map">
+		select DATE_FORMAT(CARWASHUSETIME, '%Y-%m-%d %H:%i:%S') AS CARWASHUSETIME, DATE_FORMAT(FRT_CREA_DTM, '%Y-%m-%d %H:%i:%S') AS FRT_CREA_DTM, SEQ, SALES_TOT_AMT, CARWASHYN
+		from TB_RECEIPT_ISSUE where SHOP_BIZNO = #{shop_bizno} 
+		<if test="startDate != 0 and endDate != 0">
+			and FRT_CREA_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
+		</if >
+		<if test="!'all'.equals(selectUse) and selectUse != null">
+			and CARWASHYN = #{selectUse}
+		</if>
+		order by FRT_CREA_DTM desc LIMIT #{firstpage} , 10 
+	</select> 
+	
+	<!-- 엑셀 세차권 리스트 가져오기  -->
+	<select id="excellist" parameterType="map" resultType="map">
+		select DATE_FORMAT(CARWASHUSETIME, '%Y-%m-%d %H:%i:%S') AS CARWASHUSETIME, DATE_FORMAT(FRT_CREA_DTM, '%Y-%m-%d %H:%i:%S') AS FRT_CREA_DTM, SEQ, SALES_TOT_AMT, CARWASHYN 
+		from TB_RECEIPT_ISSUE where SHOP_BIZNO = #{shop_bizno} 
+		<if test="startDate != 0 and endDate != 0">
+			and FRT_CREA_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
+		</if>
+		<if test="!'all'.equals(selectUse) and selectUse != null">
+			and CARWASHYN = #{selectUse}
+		</if>
+	</select> 
+	
+	
+	
+	<!-- 비밀번호 변경  -->
+	<update id="updatePW" parameterType="map" >
+		update TB_MEMBER SET PASSWORD = #{NewPW} WHERE MEMBER_BIZNO = #{SHOP_BIZNO}
+	</update>
+</mapper>
