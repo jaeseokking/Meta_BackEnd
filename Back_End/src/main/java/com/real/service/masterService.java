@@ -10,4 +10,6 @@ public interface masterService {
 
 	Map<String, Object> AdminS(String keyword);
 
+	int AdminD(Map<String, Object> param);
+
 }

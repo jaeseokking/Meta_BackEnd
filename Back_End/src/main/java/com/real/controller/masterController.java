@@ -1,6 +1,8 @@
 package com.real.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +51,35 @@ public class masterController {
 	public Map<String,Object> AdminS(@RequestBody String keyword){
 		
 		Map<String,Object> result = new HashMap<String,Object>();
-		
 		result = masterservice.AdminS(keyword);
-		
 		return result;
 		
+	}
+	
+	
+	/**
+	 * master가 admin 삭제
+	 * @param ListIDX
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/AdminD", method=RequestMethod.POST)
+	public int AdminD (@RequestBody String ListIDX) {
+		
+		int result = 0;
+		String[] idxs = ListIDX.split(",");
+		
+		List<String> idx2 = new ArrayList<String>();	
+		for(int i =0; i<idxs.length;i++) {
+			idx2.add(idxs[i]);
+		}
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("idx", idx2);
+		
+		result = masterservice.AdminD(param);
+		
+		return result;
 	}
 	
 	
