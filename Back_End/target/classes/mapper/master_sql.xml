@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0/*EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="master_mapper">
+
+<!-- master 에서 관리자 추가하기 -->
+<insert id="AdminA" parameterType="map">
+ insert into TB_MEMBER(ID,PASS,SHOPNAME,SHOPADDR,SHOPCALL)
+ 	values(#{bizno},#{password},#{shopname},#{shopaddr},#{shopcall})
+</insert>
+
+<!-- master 가 관리자 search -->
+<select id="AdminS" parameterType="String" resultType="map">
+
+ select ID,SHOPNAME,SHOPADDR,SHOPCALL
+ 	from TB_MEMBER
+ 		where ID LIKE CONCAT('%',#{keyword},'%') or SHOPNAME LIKE CONCAT('%',#{keyword},'%') 
+ 			or SHOPADDR LIKE CONCAT('%',#{keyword},'%')
+ 		 		or SHOPCALL LIKE CONCAT('%',#{keyword},'%')
+</select>
+
+
+<!-- master가 관리자 삭제 -->
+<delete id="AdminD" parameterType="map">
+		delete from TB_MEMBER
+		where IDX in
+		<foreach collection="idx" item="item" index="index"
+			separator="," open="(" close=")">
+			#{item}
+		</foreach>
+
+</delete>
+
+<!-- 관리자 전체수 가져오기 -->
+<select id="countTotalAdmin" parameterType="map" resultType="int">
+	select count(*)
+		from TB_MEMBER
+</select>
+
+<!-- 리스트 가져오기 페이징 처리한 -->
+<select id="AdminG" resultType="map" parameterType="com.real.util.Criteria">
+	SELECT ID,SHOPNAME,SHOPADDR,SHOPCALL,IDX
+	FROM TB_MEMBER
+	ORDER BY IDX DESC
+	LIMIT #{pageStart},#{perPageNum}
+</select>
+
+</mapper>
