@@ -1,5 +1,10 @@
 package com.real.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +24,7 @@ public class masterServiceImpl implements masterService {
 	
 	
 	/**
-	 * Master 가 관리자 추가하기 
+	 * Master가 관리자 추가
 	 */
 	@Override
 	public int AdminA(MemberVo member) {
@@ -31,7 +36,25 @@ public class masterServiceImpl implements masterService {
 		
 		int result = masterdao.AdminA(member);
 		
-		return 0;
+		return result;
+	}
+
+
+	/**
+	 * Master에서 관리가 계정 검색
+	 */
+	@Override
+	public Map<String, Object> AdminS(String keyword) {
+		// TODO Auto-generated method stub
+		
+		Map<String,Object> result = new HashMap<String,Object>();
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		
+		list = masterdao.AdminS(keyword);
+		
+		result.put("list", list);
+		
+		return result;
 	}
 	
 

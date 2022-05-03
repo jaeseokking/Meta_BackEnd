@@ -1,5 +1,8 @@
 package com.real.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +21,7 @@ public class masterController {
 	private masterService masterservice;
 	
 	/**
-	 * Master가 관리자 넣는 로직
+	 * Master가 admin 추가
 	 * MemberVo 의 요소와 맞게 잘 넣어야함
 	 * @param member
 	 * @return
@@ -34,5 +37,26 @@ public class masterController {
 		return result;
 		
 	}
+	
+	
+	/**
+	 * master가 admin 검색
+	 * @param keyword
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/AdminS",method=RequestMethod.POST)
+	public Map<String,Object> AdminS(@RequestBody String keyword){
+		
+		Map<String,Object> result = new HashMap<String,Object>();
+		
+		result = masterservice.AdminS(keyword);
+		
+		return result;
+		
+	}
+	
+	
+	
 
 }

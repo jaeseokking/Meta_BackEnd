@@ -1,5 +1,8 @@
 package com.real.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -21,5 +24,16 @@ public class masterDao {
 	public int AdminA(MemberVo member) {
 		// TODO Auto-generated method stub
 		return sqlSession.insert(namespace+".AdminA",member);
+	}
+
+
+	/**
+	 * master 가 관리가 search 
+	 * @param keyword
+	 * @return
+	 */
+	public List<Map<String, Object>> AdminS(String keyword) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(namespace+".AdminS",keyword);
 	}
 }

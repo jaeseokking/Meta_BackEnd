@@ -10,5 +10,14 @@
  	values(#{bizno},#{password},#{shopname},#{shopaddr},#{shopcall})
 </insert>
 
+<select id="AdminS" parameterType="String" resultType="map">
+
+ select ID,SHOPNAME,SHOPADDR,SHOPCALL
+ 	from TB_MEMBER
+ 		where ID LIKE CONCAT('%',#{keyword},'%') or SHOPNAME LIKE CONCAT('%',#{keyword},'%') 
+ 			or SHOPADDR LIKE CONCAT('%',#{keyword},'%')
+ 		 		or SHOPCALL LIKE CONCAT('%',#{keyword},'%')
+
+</select>
 
 </mapper>
