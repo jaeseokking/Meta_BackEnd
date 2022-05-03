@@ -12,4 +12,6 @@ public interface masterService {
 
 	int AdminD(Map<String, Object> param);
 
+	Map<String, Object> AdminG(String page);
+
 }

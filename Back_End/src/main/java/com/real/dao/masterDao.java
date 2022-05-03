@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.real.dto.MemberVo;
+import com.real.util.Criteria;
 
 @Repository
 public class masterDao {
@@ -45,5 +46,17 @@ public class masterDao {
 	public int AdminD(Map<String, Object> param) {
 		// TODO Auto-generated method stub
 		return sqlSession.delete(namespace+".AdminD",param);
+	}
+
+
+	public List<Map<String, Object>> AdminG(Criteria cri) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(namespace+".AdminG",cri);
+	}
+
+
+	public int countTotalAdmin(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace+".countTotalAdmin",param);
 	}
 }

@@ -32,4 +32,18 @@
 
 </delete>
 
+<!-- 관리자 전체수 가져오기 -->
+<select id="countTotalAdmin" parameterType="map" resultType="int">
+	select count(*)
+		from TB_MEMBER
+</select>
+
+<!-- 리스트 가져오기 페이징 처리한 -->
+<select id="AdminG" resultType="map" parameterType="com.real.util.Criteria">
+	SELECT ID,SHOPNAME,SHOPADDR,SHOPCALL,IDX
+	FROM TB_MEMBER
+	ORDER BY IDX DESC
+	LIMIT #{pageStart},#{perPageNum}
+</select>
+
 </mapper>
