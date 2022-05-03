@@ -56,6 +56,16 @@ public class masterServiceImpl implements masterService {
 		
 		return result;
 	}
+
+
+	/**
+	 * Master 관리자 삭제
+	 */
+	@Override
+	public int AdminD(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return masterdao.AdminD(param);
+	}
 	
 
 }

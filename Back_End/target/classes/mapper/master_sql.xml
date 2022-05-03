@@ -10,6 +10,7 @@
  	values(#{bizno},#{password},#{shopname},#{shopaddr},#{shopcall})
 </insert>
 
+<!-- master 가 관리자 search -->
 <select id="AdminS" parameterType="String" resultType="map">
 
  select ID,SHOPNAME,SHOPADDR,SHOPCALL
@@ -17,7 +18,18 @@
  		where ID LIKE CONCAT('%',#{keyword},'%') or SHOPNAME LIKE CONCAT('%',#{keyword},'%') 
  			or SHOPADDR LIKE CONCAT('%',#{keyword},'%')
  		 		or SHOPCALL LIKE CONCAT('%',#{keyword},'%')
-
 </select>
+
+
+<!-- master가 관리자 삭제 -->
+<delete id="AdminD" parameterType="map">
+		delete from TB_MEMBER
+		where IDX in
+		<foreach collection="idx" item="item" index="index"
+			separator="," open="(" close=")">
+			#{item}
+		</foreach>
+
+</delete>
 
 </mapper>

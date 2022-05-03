@@ -36,4 +36,14 @@ public class masterDao {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(namespace+".AdminS",keyword);
 	}
+
+
+	/**master 관리자 지우기
+	 * @param param
+	 * @return
+	 */
+	public int AdminD(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete(namespace+".AdminD",param);
+	}
 }
