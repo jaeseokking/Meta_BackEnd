@@ -82,6 +82,15 @@ public class masterController {
 		return result;
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="/AdminG", method=RequestMethod.POST)
+	public Map<String,Object> AdminG (@RequestBody String page) {
+		
+		Map<String,Object> result = new HashMap<String,Object>();
+		result = masterservice.AdminG(page);
+		return result;
+	}
+	
 	
 	
 

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.real.dao.masterDao;
 import com.real.dto.MemberVo;
 import com.real.util.AES256;
+import com.real.util.Criteria;
+import com.real.util.PageMaker;
 
 @Service
 public class masterServiceImpl implements masterService {
@@ -65,6 +67,45 @@ public class masterServiceImpl implements masterService {
 	public int AdminD(Map<String, Object> param) {
 		// TODO Auto-generated method stub
 		return masterdao.AdminD(param);
+	}
+
+
+	@Override
+	public Map<String, Object> AdminG(String page) {
+		// TODO Auto-generated method stub
+		
+		Map<String,Object> result = new HashMap<String,Object>();
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		
+	    PageMaker pageMaker = new PageMaker();
+	    
+	    int pages = 0;
+	    if(page == null) {
+	    	
+	    }else {
+	    	pages = Integer.parseInt(page);
+	    }
+	    
+	    Criteria cri = new Criteria();
+	    cri.setPage(pages);
+	    pageMaker.setCri(cri);
+	    int total = masterdao.countTotalAdmin(param);
+	    pageMaker.setTotalCount(total);
+	    
+	    param.put("Page", cri.getPage());
+	    param.put("PageStart", cri.getPageStart());
+	    param.put("PerPageNum", cri.getPerPageNum());
+		
+		
+		list = masterdao.AdminG(cri);
+		
+		result.put("list", list);
+		result.put("cri", cri);
+		result.put("pageMaker", pageMaker);
+		
+		return result;
 	}
 	
 
