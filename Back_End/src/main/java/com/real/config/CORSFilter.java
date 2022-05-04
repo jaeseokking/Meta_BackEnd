@@ -1,6 +1,5 @@
 package com.real.config;
 
-import java.beans.JavaBean;
 import java.io.IOException;
 
 import javax.servlet.Filter;
