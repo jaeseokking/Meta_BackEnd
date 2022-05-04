@@ -9,21 +9,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.real.dao.mainDAO;
+import com.real.util.AES256;
 
 @Service
 public class mainServiceImpl implements mainService {
 	@Autowired mainDAO maindao;
 
+	//암호화용 키
+	private static final String aesKey = "p8i23e4ric6y7u4ero0pa1s91k1qbv36";
+	private static AES256 AES = new AES256("AES/CBC/PKCS5Padding", aesKey.substring(0,16), aesKey.substring(0,16).getBytes());
+
 	@Override
 	public Map<String,Object> login(Map<String, Object> map) {
 
-		System.out.println("Service");
 		Map <String, Object> result = new HashMap <String, Object>();	
 		
-		
 		try {
-			if(maindao.login(map).size() > 0) {
-				result = maindao.login(map);
+			map.put("PASSWORD", AES.encryptStringToBase64((String) map.get("PASSWORD")));
+			System.out.println(map);
+			result = maindao.login(map);
+			if(result.size() > 0) {
 				result.put("result", true);
 			}else {
 				result.put("result", false);

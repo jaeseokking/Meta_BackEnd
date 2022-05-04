@@ -6,8 +6,8 @@
 
 	<!--로그인  -->
 	<select id="login" parameterType="map" resultType="map">
-		SELECT MEMBER_BIZNO FROM TB_MEMBER
-		where  MEMBER_BIZNO = #{SHOP_BIZNO} and PASSWORD = #{PASSWORD}
+		SELECT ID FROM TB_MEMBER
+		where  ID = #{SHOP_BIZNO} and PASS = #{PASSWORD}
 	</select>
 	
 	<!-- 회원 총 리스트 개수  -->
