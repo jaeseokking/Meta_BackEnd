@@ -6,7 +6,7 @@
 
 <!-- master 에서 관리자 추가하기 -->
 <insert id="AdminA" parameterType="map">
- insert into TB_MEMBER(ID,PASS,SHOPNAME,SHOPADDR,SHOPCALL)
+ insert into TB_MEMBER(BIZNO,PASS,SHOPNAME,SHOPADDR,SHOPCALL)
  	values(#{bizno},#{password},#{shopname},#{shopaddr},#{shopcall})
 </insert>
 
@@ -15,7 +15,7 @@
 
  select ID,SHOPNAME,SHOPADDR,SHOPCALL
  	from TB_MEMBER
- 		where ID LIKE CONCAT('%',#{keyword},'%') or SHOPNAME LIKE CONCAT('%',#{keyword},'%') 
+ 		where BIZNO LIKE CONCAT('%',#{keyword},'%') or SHOPNAME LIKE CONCAT('%',#{keyword},'%') 
  			or SHOPADDR LIKE CONCAT('%',#{keyword},'%')
  		 		or SHOPCALL LIKE CONCAT('%',#{keyword},'%')
 </select>
@@ -29,21 +29,112 @@
 			separator="," open="(" close=")">
 			#{item}
 		</foreach>
-
 </delete>
 
 <!-- 관리자 전체수 가져오기 -->
-<select id="countTotalAdmin" parameterType="map" resultType="int">
+<select id="countTotalAdmin"  resultType="int">
 	select count(*)
 		from TB_MEMBER
 </select>
 
 <!-- 리스트 가져오기 페이징 처리한 -->
 <select id="AdminG" resultType="map" parameterType="com.real.util.Criteria">
-	SELECT ID,SHOPNAME,SHOPADDR,SHOPCALL,IDX
+	SELECT BIZNO,SHOPNAME,SHOPADDR,SHOPCALL,IDX
 	FROM TB_MEMBER
 	ORDER BY IDX DESC
 	LIMIT #{pageStart},#{perPageNum}
 </select>
+
+<!-- 관리자정보 한개 가져오기 -->
+<select id="AdminO" parameterType="String" resultType="com.real.dto.MemberVo">
+	select IDX,BIZNO,SHOPNAME,SHOPADDR,SHOPCALL
+		from TB_MEMBER
+			where IDX = #{idx}
+
+</select>
+
+
+<!-- 공지사항 전체수 가져오기 -->
+<select id="countTotalNotice"  resultType="int">
+	select count(*)
+		from TB_NOTICE
+</select>
+
+<!-- 공지사항 리스트 가져오기 -->
+<select id="NoticeL" resultType="com.real.dto.NoticeVo" parameterType="com.real.util.Criteria">
+	SELECT IDX,TITLE,CONTENT,DATE,PERMISSION
+	FROM TB_NOTICE
+	ORDER BY IDX DESC
+	LIMIT #{pageStart},#{perPageNum}
+</select>
+
+
+<!-- 공지사항 추가하기 -->
+<insert id="NoticeI" parameterType="com.real.dto.NoticeVo">
+ insert into TB_NOTICE(TITLE,CONTENT,DATE,PERMISSION)
+ 	values(#{title},#{content},NOW(),#{permission})
+</insert>
+
+<!-- 공지사항 업데이트 하기 -->
+<update id="NoticeU" parameterType="com.real.dto.NoticeVo">
+	update TB_NOTICE
+	 	set TITLE = #{title},content = #{content}
+	 		where IDX = #{idx}
+</update>
+
+
+<!-- 공지사항 삭제 -->
+<delete id="NoticeD" parameterType="map">
+		delete from TB_NOTICE
+		where IDX in
+		<foreach collection="idx" item="item" index="index"
+			separator="," open="(" close=")">
+			#{item}
+		</foreach>
+</delete>
+
+<!-- 공지사항 한개 가져오기 -->
+<select id="NoticeO" parameterType="String" resultType="com.real.dto.NoticeVo">
+	select IDX,TITLE,CONTENT,DATE,PERMISSION
+		from TB_NOTICE
+			where IDX = #{idx}
+
+</select>
+
+<!-- 공지사항 검색하기 -->
+<select id="NoticeS" parameterType="String" resultType="com.real.dto.NoticeVo">
+ select IDX,TITLE,CONTENT,DATE,PERMISSION
+ 	from TB_NOTICE
+ 		where TITLE LIKE CONCAT('%',#{keyword},'%') or CONTENT LIKE CONCAT('%',#{keyword},'%') 
+</select>
+
+
+<!-- 문의 리스트 가져오기 -->
+<select id="countTotalEqueryL" resultType="int">
+	select count(*)
+		from TB_ENQUIRY
+</select>
+
+
+<!-- 문의사항 리스트 가져오기 -->
+<select id="EnquiryL" resultType="map" parameterType="com.real.util.Criteria">
+	SELECT IDX,TITLE,CONTENT,KIND,WHO
+	FROM TB_ENQUIRY
+	ORDER BY IDX DESC
+	LIMIT #{pageStart},#{perPageNum}
+</select>
+
+<!-- 선택한 문의사항 가져오기 -->
+<select id="EnquiryO" parameterType="map" resultType="map">
+	select IDX,TITLE,CONTENT,KIND,WHO
+		from TB_ENQUIRY
+			where IDX = #{idx}
+</select>
+
+<!-- 문의사항에 답글 남기기 -->
+<insert id="EnquiryR" parameterType="map">
+	insert into TB_ENQUIRY_REPLY(CONTENT,ENQUIRY_NUM)
+		values(#{content},#{idx})
+</insert>
 
 </mapper>

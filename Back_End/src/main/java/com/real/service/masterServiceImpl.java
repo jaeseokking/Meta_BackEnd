@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.real.dao.masterDao;
 import com.real.dto.MemberVo;
+import com.real.dto.NoticeVo;
 import com.real.util.AES256;
 import com.real.util.Criteria;
 import com.real.util.PageMaker;
@@ -64,12 +65,26 @@ public class masterServiceImpl implements masterService {
 	 * Master 관리자 삭제
 	 */
 	@Override
-	public int AdminD(Map<String, Object> param) {
+	public int AdminD(String ListIDX) {
 		// TODO Auto-generated method stub
+		
+		String[] idxs = ListIDX.split(",");
+		
+		List<String> idx2 = new ArrayList<String>();	
+		for(int i =0; i<idxs.length;i++) {
+			idx2.add(idxs[i]);
+		}
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("idx", idx2);
+		
 		return masterdao.AdminD(param);
 	}
 
 
+	/**
+	 * admin list 가져오기 페이징 처리된걸로
+	 */
 	@Override
 	public Map<String, Object> AdminG(String page) {
 		// TODO Auto-generated method stub
@@ -91,7 +106,7 @@ public class masterServiceImpl implements masterService {
 	    Criteria cri = new Criteria();
 	    cri.setPage(pages);
 	    pageMaker.setCri(cri);
-	    int total = masterdao.countTotalAdmin(param);
+	    int total = masterdao.countTotalAdmin();
 	    pageMaker.setTotalCount(total);
 	    
 	    param.put("Page", cri.getPage());
@@ -106,6 +121,184 @@ public class masterServiceImpl implements masterService {
 		result.put("pageMaker", pageMaker);
 		
 		return result;
+	}
+
+	
+	/**
+	 * 선택된 공지사항 가져오기
+	 */
+	@Override
+	public MemberVo AdminO(String idx) {
+		// TODO Auto-generated method stub
+		return masterdao.AdminO(idx);
+	}
+	
+	
+	/**
+	 *공지사항 리스트 가져오기
+	 */
+	@Override
+	public Map<String, Object> NoticeL(String page) {
+		// TODO Auto-generated method stub
+		Map<String,Object> result = new HashMap<String,Object>();
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		
+		List<NoticeVo> list = new ArrayList<NoticeVo>();
+		
+	    PageMaker pageMaker = new PageMaker();
+	    
+	    int pages = 0;
+	    if(page == null) {
+	    	
+	    }else {
+	    	pages = Integer.parseInt(page);
+	    }
+	    
+	    Criteria cri = new Criteria();
+	    cri.setPage(pages);
+	    pageMaker.setCri(cri);
+	    int total = masterdao.countTotalNotice();
+	    pageMaker.setTotalCount(total);
+	    
+	    param.put("Page", cri.getPage());
+	    param.put("PageStart", cri.getPageStart());
+	    param.put("PerPageNum", cri.getPerPageNum());
+		
+		list = masterdao.NoticeL(cri);
+		
+		result.put("list", list);
+		result.put("cri", cri);
+		result.put("pageMaker", pageMaker);
+		
+		return result;
+	}
+
+
+	/**
+	 * Notice Insert 하기
+	 */
+	@Override
+	public int NoticeI(NoticeVo notice) {
+		// TODO Auto-generated method stub
+		return masterdao.NoticeI(notice);
+	}
+
+
+	/**
+	 * 공지사항 Update
+	 */
+	@Override
+	public int NoticeU(NoticeVo notice) {
+		// TODO Auto-generated method stub
+		return  masterdao.NoticeU(notice);
+	}
+
+
+	/**
+	 * 공지사항 DELETE
+	 */
+	@Override
+	public int NoticeD(String listIDX) {
+		// TODO Auto-generated method stub
+		int result = 0; 
+		
+		String[] idxs = listIDX.split(",");
+		List<String> idx2 = new ArrayList<String>();	
+		for(int i =0; i<idxs.length;i++) {
+			idx2.add(idxs[i]);
+		}
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("idx", idx2);
+		
+		result = masterdao.NoticeD(param);
+		
+		return result;
+	}
+
+
+	/**
+	 * 선택된 공지사항 가져오기
+	 */
+	@Override
+	public NoticeVo NoticeO(String idx) {
+		// TODO Auto-generated method stub
+		return masterdao.NoticeO(idx);
+	}
+
+
+	/**
+	 * 공지사항 검색
+	 */
+	@Override
+	public Map<String, Object> NoticeS(String keyword) {
+		// TODO Auto-generated method stub
+		List<NoticeVo> list = masterdao.NoticeS(keyword);
+		Map<String,Object> result = new HashMap<String,Object>();
+		result.put("list", list);
+		return result;
+	}
+
+
+	/**
+	 *문의사항 리스트 가져오기
+	 */
+	@Override
+	public Map<String, Object> EnquiryL(String page) {
+		// TODO Auto-generated method stub
+		Map<String,Object> result = new HashMap<String,Object>();
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		
+		List<NoticeVo> list = new ArrayList<NoticeVo>();
+		
+	    PageMaker pageMaker = new PageMaker();
+	    
+	    int pages = 0;
+	    if(page == null) {
+	    	
+	    }else {
+	    	pages = Integer.parseInt(page);
+	    }
+	    
+	    Criteria cri = new Criteria();
+	    cri.setPage(pages);
+	    pageMaker.setCri(cri);
+	    int total = masterdao.countTotalEqueryL();
+	    pageMaker.setTotalCount(total);
+	    
+	    param.put("Page", cri.getPage());
+	    param.put("PageStart", cri.getPageStart());
+	    param.put("PerPageNum", cri.getPerPageNum());
+		
+		list =  masterdao.EnquiryL(cri);
+		
+		result.put("list", list);
+		result.put("cri", cri);
+		result.put("pageMaker", pageMaker);
+		
+		return result;
+	}
+
+
+	/**
+	 * 문의사항 한개 가져오기
+	 */
+	@Override
+	public Map<String, Object> EnquiryO(String idx) {
+		// TODO Auto-generated method stub
+		return masterdao.EnquiryO(idx);
+	}
+
+
+	/**
+	 *문의사항 답글 남기기
+	 */
+	@Override
+	public int EnquiryR(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return masterdao.EnquiryR(param);
 	}
 	
 
