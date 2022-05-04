@@ -1,8 +1,6 @@
 package com.real.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,7 +125,7 @@ public class masterController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value="NoticeI",method=RequestMethod.POST)
+	@RequestMapping(value="/NoticeI",method=RequestMethod.POST)
 	public int NoticeI(@RequestBody NoticeVo notice) {
 		int result = 0;
 		result = masterservice.NoticeI(notice);
@@ -141,7 +139,7 @@ public class masterController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value="NoticeU",method=RequestMethod.POST)
+	@RequestMapping(value="/NoticeU",method=RequestMethod.POST)
 	public int NoticeU(@RequestBody NoticeVo notice) {
 		int result = 0;
 		result = masterservice.NoticeU(notice);
@@ -155,7 +153,7 @@ public class masterController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value="NoticeD",method=RequestMethod.POST)
+	@RequestMapping(value="/NoticeD",method=RequestMethod.POST)
 	public int NoticeD(@RequestBody String ListIDX) {
 		int result = 0;
 		result = masterservice.NoticeD(ListIDX);
@@ -169,7 +167,7 @@ public class masterController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value="NoticeO",method=RequestMethod.POST)
+	@RequestMapping(value="/NoticeO",method=RequestMethod.POST)
 	public NoticeVo NoticeO(@RequestBody String idx) {
 		
 		NoticeVo notice = masterservice.NoticeO(idx);
@@ -184,11 +182,53 @@ public class masterController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value="NoticeS",method=RequestMethod.POST)
+	@RequestMapping(value="/NoticeS",method=RequestMethod.POST)
 	public Map<String,Object> NoticeS(@RequestBody String keyword){
 		Map<String,Object> result = new HashMap<String,Object>();
 		result =masterservice.NoticeS(keyword);
 		return result;
+	}
+	
+	
+	/**
+	 * 문의사항 리스트 가져오기
+	 * @param page
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/EnquiryL", method=RequestMethod.POST)
+	public Map<String,Object> EnquiryL(@RequestBody String page){
+		Map<String,Object> result = new HashMap<String,Object>();
+		result = masterservice.EnquiryL(page);
+		return result;
+		
+	}
+	
+	
+	/**
+	 * 선택한 문의사항 가져오기
+	 * @param idx
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/EnquiryO",method=RequestMethod.POST)
+	public Map<String,Object> EnquiryO(@RequestBody String idx){
+		Map<String,Object> result = new HashMap<String,Object>();
+		
+		result = masterservice.EnquiryO(idx);
+		
+		return result;
+	}
+	
+	/**
+	 * 문의사항 답글 남기기
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/EnquiryR",method=RequestMethod.POST)
+	public int EnquiryR(@RequestBody Map<String,Object> param) {
+		return masterservice.EnquiryR(param);
 	}
 
 }

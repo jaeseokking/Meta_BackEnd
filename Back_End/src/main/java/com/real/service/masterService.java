@@ -29,6 +29,12 @@ public interface masterService {
 
 	Map<String, Object> NoticeS(String keyword);
 
+	Map<String, Object> EnquiryL(String page);
+
+	Map<String, Object> EnquiryO(String idx);
+
+	int EnquiryR(Map<String, Object> param);
+
 
 
 }
