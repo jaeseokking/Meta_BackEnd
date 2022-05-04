@@ -60,7 +60,7 @@ public class masterDao {
 		return sqlSession.selectList(namespace+".AdminG",cri);
 	}
 
-
+	
 	/**
 	 * 관리자 전체수 가져오기 
 	 * @return
@@ -80,6 +80,15 @@ public class masterDao {
 		return sqlSession.selectOne(namespace+".countTotalNotice");
 	}
 
+	/**
+	 * 관리자정보  한개 가져오기
+	 * @param idx
+	 * @return
+	 */
+	public MemberVo AdminO(String idx) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace+".AdminO",idx);
+	}
 
 	/**
 	 * 공지사항 리스트 가져오기
@@ -112,4 +121,40 @@ public class masterDao {
 		// TODO Auto-generated method stub
 		return sqlSession.update(namespace+".NoticeU",notice);
 	}
+
+
+	/**
+	 * 공지사항 DELETE
+	 * @param param
+	 * @return
+	 */
+	public int NoticeD(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete(namespace+".NoticeD",param);
+	}
+
+
+	/**
+	 * 공지사항 가져오기
+	 * @param idx
+	 * @return
+	 */
+	public NoticeVo NoticeO(String idx) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace+".NoticeO", idx);
+	}
+
+
+	/**
+	 * 공지사항 검색하기
+	 * @param keyword
+	 * @return
+	 */
+	public List<NoticeVo> NoticeS(String keyword) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(namespace+".NoticeS",keyword);
+	}
+
+
+
 }

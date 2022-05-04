@@ -25,6 +25,7 @@ public class masterController {
 	
 	/**
 	 * Master가 admin 추가
+	 * Admin Add
 	 * MemberVo 의 요소와 맞게 잘 넣어야함
 	 * @param member
 	 * @return
@@ -44,6 +45,7 @@ public class masterController {
 	
 	/**
 	 * master가 admin 검색
+	 * Admin Search
 	 * @param keyword
 	 * @return
 	 */
@@ -60,6 +62,7 @@ public class masterController {
 	
 	/**
 	 * master가 admin 삭제
+	 * Admin Delete
 	 * @param ListIDX
 	 * @return
 	 */
@@ -68,23 +71,13 @@ public class masterController {
 	public int AdminD (@RequestBody String ListIDX) {
 		
 		int result = 0;
-		String[] idxs = ListIDX.split(",");
-		
-		List<String> idx2 = new ArrayList<String>();	
-		for(int i =0; i<idxs.length;i++) {
-			idx2.add(idxs[i]);
-		}
-		
-		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("idx", idx2);
-		
-		result = masterservice.AdminD(param);
-		
+		result = masterservice.AdminD(ListIDX);
 		return result;
 	}
 	
 	/**
 	 * Admin List 가져오기 페이징 처리된걸로
+	 * Admin GetList
 	 * @param page
 	 * @return
 	 */
@@ -98,9 +91,23 @@ public class masterController {
 	}
 	
 	
+	/**
+	 * 관리자 한개 가져오기
+	 * Admin One
+	 * @param idx
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/AdminO", method=RequestMethod.POST)
+	public MemberVo AdminO(@RequestBody String idx) {
+		MemberVo member = masterservice.AdminO(idx);
+		return member;
+	}
+	
 	
 	/**
 	 * 공지사항 리스트 가져오기
+	 * Notice List
 	 * @param page
 	 * @return
 	 */
@@ -115,6 +122,7 @@ public class masterController {
 	
 	/**
 	 * 공지사항 Insert
+	 * Notice Insert
 	 * @param notice
 	 * @return
 	 */
@@ -128,6 +136,7 @@ public class masterController {
 	
 	/**
 	 * 공지사항 Update
+	 * Notice Update
 	 * @param notice
 	 * @return
 	 */
@@ -136,6 +145,49 @@ public class masterController {
 	public int NoticeU(@RequestBody NoticeVo notice) {
 		int result = 0;
 		result = masterservice.NoticeU(notice);
+		return result;
+	}
+	
+	/**
+	 * 공지사항 삭제하기
+	 * Notice Delete
+	 * @param ListIDX
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="NoticeD",method=RequestMethod.POST)
+	public int NoticeD(@RequestBody String ListIDX) {
+		int result = 0;
+		result = masterservice.NoticeD(ListIDX);
+		return result;
+	}
+	
+	/**
+	 * 선택된 공지사항 가져오기
+	 * Notice One
+	 * @param idx
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="NoticeO",method=RequestMethod.POST)
+	public NoticeVo NoticeO(@RequestBody String idx) {
+		
+		NoticeVo notice = masterservice.NoticeO(idx);
+		
+		return notice;
+	}
+	
+	/**
+	 * 공지사항 검색하기
+	 * Notice Search
+	 * @param keyword
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="NoticeS",method=RequestMethod.POST)
+	public Map<String,Object> NoticeS(@RequestBody String keyword){
+		Map<String,Object> result = new HashMap<String,Object>();
+		result =masterservice.NoticeS(keyword);
 		return result;
 	}
 
