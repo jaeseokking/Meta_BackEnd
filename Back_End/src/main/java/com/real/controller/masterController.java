@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.real.dto.MemberVo;
+import com.real.dto.NoticeVo;
 import com.real.service.masterService;
 
 @Controller
@@ -112,7 +113,30 @@ public class masterController {
 	}
 	
 	
+	/**
+	 * 공지사항 Insert
+	 * @param notice
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="NoticeI",method=RequestMethod.POST)
+	public int NoticeI(@RequestBody NoticeVo notice) {
+		int result = 0;
+		result = masterservice.NoticeI(notice);
+		return result;
+	}
 	
-	
+	/**
+	 * 공지사항 Update
+	 * @param notice
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="NoticeU",method=RequestMethod.POST)
+	public int NoticeU(@RequestBody NoticeVo notice) {
+		int result = 0;
+		result = masterservice.NoticeU(notice);
+		return result;
+	}
 
 }

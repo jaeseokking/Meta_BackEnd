@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.real.dao.masterDao;
 import com.real.dto.MemberVo;
+import com.real.dto.NoticeVo;
 import com.real.util.AES256;
 import com.real.util.Criteria;
 import com.real.util.PageMaker;
@@ -122,7 +123,7 @@ public class masterServiceImpl implements masterService {
 		
 		Map<String,Object> param = new HashMap<String,Object>();
 		
-		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		List<NoticeVo> list = new ArrayList<NoticeVo>();
 		
 	    PageMaker pageMaker = new PageMaker();
 	    
@@ -150,6 +151,26 @@ public class masterServiceImpl implements masterService {
 		result.put("pageMaker", pageMaker);
 		
 		return result;
+	}
+
+
+	/**
+	 * Notice Insert 하기
+	 */
+	@Override
+	public int NoticeI(NoticeVo notice) {
+		// TODO Auto-generated method stub
+		return masterdao.NoticeI(notice);
+	}
+
+
+	/**
+	 * 공지사항 Update
+	 */
+	@Override
+	public int NoticeU(NoticeVo notice) {
+		// TODO Auto-generated method stub
+		return  masterdao.NoticeU(notice);
 	}
 	
 
