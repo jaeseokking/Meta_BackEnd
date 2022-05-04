@@ -82,6 +82,11 @@ public class masterController {
 		return result;
 	}
 	
+	/**
+	 * Admin List 가져오기 페이징 처리된걸로
+	 * @param page
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value="/AdminG", method=RequestMethod.POST)
 	public Map<String,Object> AdminG (@RequestBody String page) {
@@ -90,6 +95,22 @@ public class masterController {
 		result = masterservice.AdminG(page);
 		return result;
 	}
+	
+	
+	
+	/**
+	 * 공지사항 리스트 가져오기
+	 * @param page
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/NoticeL",method=RequestMethod.POST)
+	public Map<String,Object> NoticeL (@RequestBody String page){
+		Map<String,Object> result = new HashMap<String,Object>();
+		result = masterservice.NoticeL(page);
+		return result;
+	}
+	
 	
 	
 	
