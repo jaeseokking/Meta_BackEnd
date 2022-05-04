@@ -65,8 +65,19 @@ public class masterServiceImpl implements masterService {
 	 * Master 관리자 삭제
 	 */
 	@Override
-	public int AdminD(Map<String, Object> param) {
+	public int AdminD(String ListIDX) {
 		// TODO Auto-generated method stub
+		
+		String[] idxs = ListIDX.split(",");
+		
+		List<String> idx2 = new ArrayList<String>();	
+		for(int i =0; i<idxs.length;i++) {
+			idx2.add(idxs[i]);
+		}
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("idx", idx2);
+		
 		return masterdao.AdminD(param);
 	}
 
@@ -112,6 +123,16 @@ public class masterServiceImpl implements masterService {
 		return result;
 	}
 
+	
+	/**
+	 * 선택된 공지사항 가져오기
+	 */
+	@Override
+	public MemberVo AdminO(String idx) {
+		// TODO Auto-generated method stub
+		return masterdao.AdminO(idx);
+	}
+	
 	
 	/**
 	 *공지사항 리스트 가져오기
@@ -171,6 +192,52 @@ public class masterServiceImpl implements masterService {
 	public int NoticeU(NoticeVo notice) {
 		// TODO Auto-generated method stub
 		return  masterdao.NoticeU(notice);
+	}
+
+
+	/**
+	 * 공지사항 DELETE
+	 */
+	@Override
+	public int NoticeD(String listIDX) {
+		// TODO Auto-generated method stub
+		int result = 0; 
+		
+		String[] idxs = listIDX.split(",");
+		List<String> idx2 = new ArrayList<String>();	
+		for(int i =0; i<idxs.length;i++) {
+			idx2.add(idxs[i]);
+		}
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("idx", idx2);
+		
+		result = masterdao.NoticeD(param);
+		
+		return result;
+	}
+
+
+	/**
+	 * 선택된 공지사항 가져오기
+	 */
+	@Override
+	public NoticeVo NoticeO(String idx) {
+		// TODO Auto-generated method stub
+		return masterdao.NoticeO(idx);
+	}
+
+
+	/**
+	 * 공지사항 검색
+	 */
+	@Override
+	public Map<String, Object> NoticeS(String keyword) {
+		// TODO Auto-generated method stub
+		List<NoticeVo> list = masterdao.NoticeS(keyword);
+		Map<String,Object> result = new HashMap<String,Object>();
+		result.put("list", list);
+		return result;
 	}
 	
 

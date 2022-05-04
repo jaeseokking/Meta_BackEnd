@@ -11,7 +11,9 @@ public interface masterService {
 
 	Map<String, Object> AdminS(String keyword);
 
-	int AdminD(Map<String, Object> param);
+	int AdminD(String ListIDX);
+	
+	MemberVo AdminO(String idx);
 
 	Map<String, Object> AdminG(String page);
 
@@ -20,5 +22,13 @@ public interface masterService {
 	int NoticeI(NoticeVo notice);
 
 	int NoticeU(NoticeVo notice);
+
+	int NoticeD(String listIDX);
+
+	NoticeVo NoticeO(String idx);
+
+	Map<String, Object> NoticeS(String keyword);
+
+
 
 }

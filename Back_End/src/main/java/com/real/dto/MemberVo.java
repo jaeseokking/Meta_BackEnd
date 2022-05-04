@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class MemberVo {
 	
+	private int idx;
 	private String bizno;
 	private String password;
 	private String shopname;
