@@ -49,14 +49,44 @@ public class masterDao {
 	}
 
 
+	/**
+	 * 관리자 List 가져오기
+	 * @param cri
+	 * @return
+	 */
 	public List<Map<String, Object>> AdminG(Criteria cri) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(namespace+".AdminG",cri);
 	}
 
 
-	public int countTotalAdmin(Map<String, Object> param) {
+	/**
+	 * 관리자 전체수 가져오기 
+	 * @return
+	 */
+	public int countTotalAdmin() {
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne(namespace+".countTotalAdmin",param);
+		return sqlSession.selectOne(namespace+".countTotalAdmin");
+	}
+
+
+	/**
+	 * 공지사항 전체 가져오기
+	 * @return
+	 */
+	public int countTotalNotice() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace+".countTotalNotice");
+	}
+
+
+	/**
+	 * 공지사항 리스트 가져오기
+	 * @param cri
+	 * @return
+	 */
+	public List<Map<String, Object>> NoticeL(Criteria cri) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(namespace+".NoticeL",cri);
 	}
 }

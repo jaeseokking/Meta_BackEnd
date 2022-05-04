@@ -70,6 +70,9 @@ public class masterServiceImpl implements masterService {
 	}
 
 
+	/**
+	 * admin list 가져오기 페이징 처리된걸로
+	 */
 	@Override
 	public Map<String, Object> AdminG(String page) {
 		// TODO Auto-generated method stub
@@ -91,7 +94,7 @@ public class masterServiceImpl implements masterService {
 	    Criteria cri = new Criteria();
 	    cri.setPage(pages);
 	    pageMaker.setCri(cri);
-	    int total = masterdao.countTotalAdmin(param);
+	    int total = masterdao.countTotalAdmin();
 	    pageMaker.setTotalCount(total);
 	    
 	    param.put("Page", cri.getPage());
@@ -100,6 +103,47 @@ public class masterServiceImpl implements masterService {
 		
 		
 		list = masterdao.AdminG(cri);
+		
+		result.put("list", list);
+		result.put("cri", cri);
+		result.put("pageMaker", pageMaker);
+		
+		return result;
+	}
+
+	
+	/**
+	 *공지사항 리스트 가져오기
+	 */
+	@Override
+	public Map<String, Object> NoticeL(String page) {
+		// TODO Auto-generated method stub
+		Map<String,Object> result = new HashMap<String,Object>();
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		
+	    PageMaker pageMaker = new PageMaker();
+	    
+	    int pages = 0;
+	    if(page == null) {
+	    	
+	    }else {
+	    	pages = Integer.parseInt(page);
+	    }
+	    
+	    Criteria cri = new Criteria();
+	    cri.setPage(pages);
+	    pageMaker.setCri(cri);
+	    int total = masterdao.countTotalNotice();
+	    pageMaker.setTotalCount(total);
+	    
+	    param.put("Page", cri.getPage());
+	    param.put("PageStart", cri.getPageStart());
+	    param.put("PerPageNum", cri.getPerPageNum());
+		
+		list = masterdao.NoticeL(cri);
 		
 		result.put("list", list);
 		result.put("cri", cri);

@@ -14,4 +14,6 @@ public interface masterService {
 
 	Map<String, Object> AdminG(String page);
 
+	Map<String, Object> NoticeL(String page);
+
 }
