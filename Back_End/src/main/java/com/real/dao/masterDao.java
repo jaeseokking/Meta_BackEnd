@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.real.dto.MemberVo;
+import com.real.dto.NoticeVo;
 import com.real.util.Criteria;
 
 @Repository
@@ -85,8 +86,30 @@ public class masterDao {
 	 * @param cri
 	 * @return
 	 */
-	public List<Map<String, Object>> NoticeL(Criteria cri) {
+	public List<NoticeVo> NoticeL(Criteria cri) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(namespace+".NoticeL",cri);
+	}
+
+
+	/**
+	 * 공지사항 Insert
+	 * @param notice
+	 * @return
+	 */
+	public int NoticeI(NoticeVo notice) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert(namespace+".NoticeI",notice);
+	}
+
+
+	/**
+	 * 공지사항 Update
+	 * @param notice
+	 * @return
+	 */
+	public int NoticeU(NoticeVo notice) {
+		// TODO Auto-generated method stub
+		return sqlSession.update(namespace+".NoticeU",notice);
 	}
 }
