@@ -156,5 +156,48 @@ public class masterDao {
 	}
 
 
+	/**
+	 * 총 문의 갯수
+	 * @return
+	 */
+	public int countTotalEqueryL() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace+".countTotalEqueryL");
+	}
+
+
+	/**
+	 * 문의사항 리스트가져오기
+	 * @param cri
+	 * @return
+	 */
+	public List<NoticeVo> EnquiryL(Criteria cri) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(namespace+".EnquiryL",cri);
+	}
+
+
+	/**
+	 * 문의사항 가져오기
+	 * @param idx
+	 * @return
+	 */
+	public Map<String, Object> EnquiryO(String idx) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace+".EnquiryO", idx);
+	}
+
+
+	/**
+	 * 문의사항 답글남기기
+	 * @param param
+	 * @return
+	 */
+	public int EnquiryR(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert(namespace+".EnquiryR",param);
+	}
+
+
 
 }

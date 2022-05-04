@@ -239,6 +239,67 @@ public class masterServiceImpl implements masterService {
 		result.put("list", list);
 		return result;
 	}
+
+
+	/**
+	 *문의사항 리스트 가져오기
+	 */
+	@Override
+	public Map<String, Object> EnquiryL(String page) {
+		// TODO Auto-generated method stub
+		Map<String,Object> result = new HashMap<String,Object>();
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		
+		List<NoticeVo> list = new ArrayList<NoticeVo>();
+		
+	    PageMaker pageMaker = new PageMaker();
+	    
+	    int pages = 0;
+	    if(page == null) {
+	    	
+	    }else {
+	    	pages = Integer.parseInt(page);
+	    }
+	    
+	    Criteria cri = new Criteria();
+	    cri.setPage(pages);
+	    pageMaker.setCri(cri);
+	    int total = masterdao.countTotalEqueryL();
+	    pageMaker.setTotalCount(total);
+	    
+	    param.put("Page", cri.getPage());
+	    param.put("PageStart", cri.getPageStart());
+	    param.put("PerPageNum", cri.getPerPageNum());
+		
+		list =  masterdao.EnquiryL(cri);
+		
+		result.put("list", list);
+		result.put("cri", cri);
+		result.put("pageMaker", pageMaker);
+		
+		return result;
+	}
+
+
+	/**
+	 * 문의사항 한개 가져오기
+	 */
+	@Override
+	public Map<String, Object> EnquiryO(String idx) {
+		// TODO Auto-generated method stub
+		return masterdao.EnquiryO(idx);
+	}
+
+
+	/**
+	 *문의사항 답글 남기기
+	 */
+	@Override
+	public int EnquiryR(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return masterdao.EnquiryR(param);
+	}
 	
 
 }
