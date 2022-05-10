@@ -17,6 +17,7 @@ public class mainDAO {
 	
 
 	public Map<String,Object> login(Map<String, Object> map) {
+		System.out.println(map);
 		return sqlSession.selectOne(namespace+".login", map);
 	}
 	

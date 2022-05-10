@@ -197,13 +197,20 @@
 		<scope>provided</scope>
 	</dependency>
 		   
-<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-<dependency>
-    <groupId>commons-codec</groupId>
-    <artifactId>commons-codec</artifactId>
-    <version>1.15</version>
-</dependency>
-		   
+	<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+	<dependency>
+	    <groupId>commons-codec</groupId>
+	    <artifactId>commons-codec</artifactId>
+	    <version>1.15</version>
+	</dependency>
+	
+	<!-- JWT -->
+	<dependency>
+	   <groupId>io.jsonwebtoken</groupId>
+	   <artifactId>jjwt</artifactId>
+	   <version>0.9.1</version>
+	</dependency>
+			   
 		   
 		   
 	</dependencies>

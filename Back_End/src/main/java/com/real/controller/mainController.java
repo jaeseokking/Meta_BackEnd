@@ -34,7 +34,6 @@ public class mainController {
 	public Map<String,Object>login(@RequestBody Map<String,Object> memberinfo) {
 			
 		Map <String, Object> resultMap = new HashMap<String, Object>();
-		
 		return mainservice.login(memberinfo);
 	}
 	
