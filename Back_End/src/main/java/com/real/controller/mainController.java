@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.real.dto.MemberVo;
 import com.real.service.mainService;
 
 @Controller
@@ -28,12 +29,11 @@ public class mainController {
 	@Autowired 
 	mainService mainservice;
 
-
+	
 	//로그인 
 	@ResponseBody
 	@RequestMapping(value="/login", method=RequestMethod.POST )
 	public Map<String,Object>login(@RequestBody Map<String,Object> memberinfo) {
-		System.out.println(memberinfo);
 			
 		Map <String, Object> resultMap = new HashMap<String, Object>();
 		return mainservice.login(memberinfo);

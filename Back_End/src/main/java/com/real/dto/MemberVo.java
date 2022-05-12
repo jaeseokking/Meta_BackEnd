@@ -14,7 +14,7 @@ public class MemberVo {
 	private String shopname;
 	private String shopaddr;
 	private String shopcall;
-
+	private String accessToken;
 	
 
 }
