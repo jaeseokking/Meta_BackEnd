@@ -10,13 +10,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class CORSFilter implements Filter{
+	
+	
 
 	
 	@Override
