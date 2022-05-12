@@ -3,12 +3,17 @@ package com.real.controller;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,21 +28,65 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.real.dto.MemberVo;
 import com.real.service.mainService;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 @Controller
 @RequestMapping("/api")
 public class mainController {
 	@Autowired 
 	mainService mainservice;
+	
+    private String secretKey = "realmkt";
+    
+    @PostConstruct
+    protected void init() {
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    }
+
+	
+	private String getToken(String subject , long expire) {
+		String accessToken = "";
+		
+		Claims claims = Jwts.claims().setSubject(subject);
+		accessToken = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date())
+//                .setExpiration(Date.from(LocalDateTime.now().plusMinutes(expire).toInstant(ZoneOffset.ofHours(9))))
+                .setExpiration(new Date(System.currentTimeMillis() + (expire * (1000 * 60 ))))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+
+
+		  
+		return accessToken;
+	}
 
 	
 	//로그인 
 	@ResponseBody
 	@RequestMapping(value="/login", method=RequestMethod.POST )
-	public Map<String,Object>login(@RequestBody Map<String,Object> memberinfo) {
-			
+	public String login(@RequestBody Map<String, Object> memberinfo, HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = mainservice.login(memberinfo);
+		String accessToken = "";
+		String refreshToken = "";
+		
+		//회원정보가 있을 경우
+		if(result.size() > 0) {
+			accessToken = getToken((String) memberinfo.get("bizno"), 1);
+			refreshToken = getToken((String) memberinfo.get("bizno"), 3);
+			Cookie refreshCookie = new Cookie("refreshToken" , refreshToken);
+			refreshCookie.setMaxAge(3*60);
+			response.addCookie(refreshCookie);
+		}else {
+			result.put("result", false);
+		}
+	
 		Map <String, Object> resultMap = new HashMap<String, Object>();
-		return mainservice.login(memberinfo);
+		return accessToken;
 	}
+	
 	
 	//회원의 총 리스트 개수 가져오기 
 	@ResponseBody
