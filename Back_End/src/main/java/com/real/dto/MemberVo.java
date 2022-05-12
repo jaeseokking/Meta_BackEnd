@@ -1,8 +1,11 @@
 package com.real.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class MemberVo {
 	
 	private int idx;
