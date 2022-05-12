@@ -56,10 +56,7 @@ public class mainController {
 //                .setExpiration(Date.from(LocalDateTime.now().plusMinutes(expire).toInstant(ZoneOffset.ofHours(9))))
                 .setExpiration(new Date(System.currentTimeMillis() + (expire * (1000 * 60 ))))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-
-
-		  
+                .compact(); 
 		return accessToken;
 	}
 
@@ -68,6 +65,7 @@ public class mainController {
 	@ResponseBody
 	@RequestMapping(value="/login", method=RequestMethod.POST )
 	public String login(@RequestBody Map<String, Object> memberinfo, HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("로그인컨트롤로 들어옴");
 		Map<String, Object> result = mainservice.login(memberinfo);
 		String accessToken = "";
 		String refreshToken = "";
