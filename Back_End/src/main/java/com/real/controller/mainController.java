@@ -30,9 +30,7 @@ public class mainController {
 	@Autowired 
 	mainService mainservice;
 
-	
-	
-	
+
 	//로그인 
 	@ResponseBody
 	@RequestMapping(value="/login", method=RequestMethod.POST )
