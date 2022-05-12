@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.real.dao.mainDAO;
+import com.real.dto.MemberVo;
 import com.real.util.AES256;
 
 @Service
@@ -26,7 +27,7 @@ public class mainServiceImpl implements mainService {
 		Map <String, Object> result = new HashMap <String, Object>();	
 		
 		try {
-			map.put("PASSWORD", AES.encryptStringToBase64((String) map.get("PASSWORD")));
+			map.put("PASS", AES.encryptStringToBase64((String) map.get("PASS")));
 			result = maindao.login(map);
 			
 			return result;
@@ -35,8 +36,7 @@ public class mainServiceImpl implements mainService {
 		
 		}
 		return result;
-			
-		
+
 	}
 
 	
