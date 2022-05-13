@@ -57,7 +57,6 @@ public class mainController {
 		accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
-//                .setExpiration(Date.from(LocalDateTime.now().plusMinutes(expire).toInstant(ZoneOffset.ofHours(9))))
                 .setExpiration(new Date(System.currentTimeMillis() + (expire * (1000 * 60 ))))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact(); 
@@ -85,32 +84,44 @@ public class mainController {
 	@ResponseBody
 	@RequestMapping(value="/refreshToken" , method=RequestMethod.POST)
 	public String refreshToken(MemberVo member , HttpServletRequest request , HttpServletResponse response) throws Exception{
-	    String accessToken = "";
+	   
+		String accessToken = "";
 	    String refreshToken = "";
+	    
+	    System.out.println(member.getBizno());
 
-	    Cookie [] cookies = request.getCookies();
-	    if(cookies != null && cookies.length > 0 ) {
-	    	for(Cookie cookie : cookies) {
-	        	if(cookie.getName().equals("refreshToken")) {
-	          		refreshToken = cookie.getValue();
-	          		if(checkClaim(refreshToken)) {
-	              		accessToken = getToken(member.getBizno(), 1);
-	                }else {
-	                    throw new InvaildTokenException();
-	                }
-	            }
-	    	}
-	    }
-
-	    if(refreshToken == null || "".equals(refreshToken)) {
-	    	throw new InvaildTokenException();
-	    }
+//	    Cookie [] cookies = request.getCookies();
+//	    if(cookies != null && cookies.length > 0 ) {
+//	    	for(Cookie cookie : cookies) {
+//	    		System.out.println(cookie);
+//	        	if(cookie.getName().equals("refreshToken")) {
+//	          		refreshToken = cookie.getValue();
+//	          		if(checkClaim(refreshToken)) {
+//	              		accessToken = getToken(member.getBizno(), 1);
+//	                }else {
+//	                    throw new InvaildTokenException();
+//	                }
+//	            }
+//	    	}
+//	    }
+//
+//	    if(refreshToken == null || "".equals(refreshToken)) {
+//	    	throw new InvaildTokenException();
+//	    }
 
 	    return accessToken;
 	}
 
 	
 	//로그인 
+	/**
+	 * 
+	 * 
+	 * @param member
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value="/login", method=RequestMethod.POST )
 	public String login(MemberVo member, HttpServletRequest request, HttpServletResponse response) {
