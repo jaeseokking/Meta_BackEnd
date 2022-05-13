@@ -24,6 +24,5 @@
 	<context:component-scan base-package="com.real.ran" />
 	<context:component-scan base-package="com.real.*" />
 	
-	
-	
+
 </beans:beans>

@@ -9,6 +9,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.real.dto.MemberVo;
+
 @Repository
 public class mainDAO {
 	@Autowired
@@ -17,6 +19,7 @@ public class mainDAO {
 	
 
 	public Map<String,Object> login(Map<String, Object> map) {
+		System.out.println(map);
 		return sqlSession.selectOne(namespace+".login", map);
 	}
 	
