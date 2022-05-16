@@ -37,16 +37,10 @@ public class mainController {
 	@Autowired 
 	mainService mainservice;
 	
-    private String secretKey = "realmkt";
     
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-    
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-    }
-    
+
     
     
     @ResponseBody
