@@ -30,11 +30,6 @@ import com.real.dto.MemberVo;
 import com.real.jwt.JwtTokenProvider;
 import com.real.service.mainService;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 @Controller
 @RequestMapping("/api")
@@ -53,6 +48,29 @@ public class mainController {
     }
     
     
+    
+    @ResponseBody
+  	@RequestMapping(value="/logout", method=RequestMethod.POST )
+  	public void logout(HttpServletRequest request , HttpServletResponse response) 
+  			throws Exception{
+      	
+      	String refreshToken = "";
+      	
+      	Cookie [] cookies = request.getCookies();
+      	if(cookies != null && cookies.length > 0) {
+      		for(Cookie cookie : cookies) {
+      			if(cookie.getName().equals("refresh_token")) {
+      					Cookie removeCookie = new Cookie("refresh_token", null);
+      					removeCookie.setMaxAge(0);
+      					response.addCookie(removeCookie);
+      				
+      			}
+      		}
+      	}
+   	
+      }
+    
+    
     @ResponseBody
 	@RequestMapping(value="/refreshToken", method=RequestMethod.POST )
 	public String refreshToken(@RequestBody MemberVo member , HttpServletRequest request , HttpServletResponse response) 
@@ -68,14 +86,10 @@ public class mainController {
     			if(cookie.getName().equals("refresh_token")) {
     				refreshToken = cookie.getValue();
     				if(jwtTokenProvider.checkClaim(refreshToken)) {
-//    					HttpSession se = request.getSession();
-//    					MemberVo vo = (MemberVo) se.getAttribute("member");
-//    					accessToken = jwtTokenProvider.getToken(vo.getBizno(), 1);
     					String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
     					System.out.println("bizno :: " + bizno);
     					accessToken = jwtTokenProvider.getToken(bizno, 1);
     					Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
-    					refreshCookie.setSecure(true);
     					refreshCookie.setMaxAge(3 * 60);
     					response.addCookie(refreshCookie);
     				}else {
@@ -83,6 +97,9 @@ public class mainController {
     				}
     			}
     		}
+    	}
+    	if(refreshToken == null || "".equals(refreshToken)) {
+    		return null;
     	}
     	
     	return accessToken;
@@ -124,17 +141,9 @@ public class mainController {
 			refreshCookie.setMaxAge(3 * 60);
 
 			response.addCookie(refreshCookie);
-			//memberData.setBizno((String)result.get("BIZNO"));
 			
-			//서버 세션에 Bizno 저장
-//			MemberVo vo = new MemberVo();
-//			vo.setBizno((String)result.get("BIZNO"));
-//			HttpSession se = request.getSession();
-//			se.setAttribute("member", vo);
-			
-			return jwtTokenProvider.createToken((String)result.get("BIZNO"));
+			return accessToken;
 		}else {
-			//result.put("result", false);
 		}
 	
 		return accessToken;

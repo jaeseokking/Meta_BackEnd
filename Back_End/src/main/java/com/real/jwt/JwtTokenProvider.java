@@ -104,5 +104,8 @@ public class JwtTokenProvider {
 		return accessToken;
 	}
 	
+	public void deleteToken() {
+		
+	}
 
 }
