@@ -42,6 +42,8 @@ public class mainController {
 	
     private String secretKey = "realmkt";
     
+    private JwtTokenProvider jwtTokenProvider;
+    
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
@@ -75,7 +77,7 @@ public class mainController {
 		if(result.size() > 0) {
 			System.out.println("회원 인증 완료");
 			result.put("result", true);
-			accessToken = JwtTokenProvider.createToken(member.getBizno());
+			accessToken = jwtTokenProvider.createToken(member.getBizno());
 		}else {
 			result.put("result", false);
 		}
