@@ -8,33 +8,28 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.real.dto.MemberVo;
+import com.real.jwt.JwtTokenProvider;
 import com.real.service.mainService;
-import com.real.token.InvaildTokenException;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 @Controller
 @RequestMapping("/api")
@@ -42,80 +37,74 @@ public class mainController {
 	@Autowired 
 	mainService mainservice;
 	
-    private String secretKey = "realmkt";
     
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    
+    
+    @ResponseBody
+  	@RequestMapping(value="/logout", method=RequestMethod.POST )
+  	public void logout(HttpServletRequest request , HttpServletResponse response) 
+  			throws Exception{
+      	
+      	String refreshToken = "";
+      	
+      	Cookie [] cookies = request.getCookies();
+      	if(cookies != null && cookies.length > 0) {
+      		for(Cookie cookie : cookies) {
+      			if(cookie.getName().equals("refresh_token")) {
+      					Cookie removeCookie = new Cookie("refresh_token", null);
+      					removeCookie.setMaxAge(0);
+      					response.addCookie(removeCookie);
+      				
+      			}
+      		}
+      	}
+   	
+      }
+    
+    
+    @ResponseBody
+	@RequestMapping(value="/refreshToken", method=RequestMethod.POST )
+	public String refreshToken(@RequestBody MemberVo member , HttpServletRequest request , HttpServletResponse response) 
+			throws Exception{
+    	
+    	String accessToken = "";
+    	String refreshToken = "";
+    	
+    	Cookie [] cookies = request.getCookies();
+    	if(cookies != null && cookies.length > 0) {
+    		for(Cookie cookie : cookies) {
+    			System.out.println("cookie name : " + cookie.getName());
+    			if(cookie.getName().equals("refresh_token")) {
+    				refreshToken = cookie.getValue();
+    				if(jwtTokenProvider.checkClaim(refreshToken)) {
+    					String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+    					System.out.println("bizno :: " + bizno);
+    					accessToken = jwtTokenProvider.getToken(bizno, 1);
+    					Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+    					refreshCookie.setMaxAge(3 * 60);
+    					response.addCookie(refreshCookie);
+    				}else {
+    					return null;
+    				}
+    			}
+    		}
+    	}
+    	if(refreshToken == null || "".equals(refreshToken)) {
+    		return null;
+    	}
+    	
+    	return accessToken;
     }
 
-	//토큰 발행
-	private String getToken(String subject , long expire) {
-		String accessToken = "";
-		
-		Claims claims = Jwts.claims().setSubject(subject);
-		accessToken = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + (expire * (1000 * 60 ))))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact(); 
-		return accessToken;
-	}
-	
-	//Claim : payload 정보의 한 조각, key value 값으로 이루어짐
-	public boolean checkClaim(String jwt) {
-	    try {
-	    	Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
-	                .parseClaimsJws(jwt).getBody();
-	        return true;
-	    
-	    }catch(ExpiredJwtException e) {   
-	        System.out.println("Token Expired");
-	        return false;
-	    
-	    }catch(JwtException e) {        
-	        System.out.println("Token Error" + e);
-	        return false;
-	    }
-	}
-	
-	//토큰 리프레쉬
-	@ResponseBody
-	@RequestMapping(value="/refreshToken" , method=RequestMethod.POST)
-	public String refreshToken(MemberVo member , HttpServletRequest request , HttpServletResponse response) throws Exception{
-	   
-		String accessToken = "";
-	    String refreshToken = "";
-	    
-	    System.out.println(member.getBizno());
+    
 
-//	    Cookie [] cookies = request.getCookies();
-//	    if(cookies != null && cookies.length > 0 ) {
-//	    	for(Cookie cookie : cookies) {
-//	    		System.out.println(cookie);
-//	        	if(cookie.getName().equals("refreshToken")) {
-//	          		refreshToken = cookie.getValue();
-//	          		if(checkClaim(refreshToken)) {
-//	              		accessToken = getToken(member.getBizno(), 1);
-//	                }else {
-//	                    throw new InvaildTokenException();
-//	                }
-//	            }
-//	    	}
-//	    }
-//
-//	    if(refreshToken == null || "".equals(refreshToken)) {
-//	    	throw new InvaildTokenException();
-//	    }
-
-	    return accessToken;
-	}
 
 	
-	//로그인 
 	/**
-	 * 
+	 * 회원정보 확인 및 토큰 발행
 	 * 
 	 * @param member
 	 * @param request
@@ -124,8 +113,7 @@ public class mainController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/login", method=RequestMethod.POST )
-	public String login(MemberVo member, HttpServletRequest request, HttpServletResponse response) {
-		System.out.println(member.getBizno());
+	public String login(@RequestBody MemberVo member , HttpServletRequest request , HttpServletResponse response) throws Exception{
 		
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("BIZNO", member.getBizno());
@@ -137,16 +125,21 @@ public class mainController {
 		System.out.println(result);
 		//회원정보가 있을 경우
 		if(result.size() > 0) {
-			accessToken = getToken(member.getBizno(), 1);
-			refreshToken = getToken(member.getBizno(), 3);
-			Cookie refreshCookie = new Cookie("refreshToken" , refreshToken);
-			refreshCookie.setMaxAge(3*60);
+			System.out.println("회원 인증 완료" + result.get("BIZNO"));
+			//result.put("result", true);
+			accessToken = jwtTokenProvider.getToken((String)result.get("BIZNO") , 1);
+			refreshToken = jwtTokenProvider.getToken((String)result.get("BIZNO") , 3);
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setPath("/");
+			refreshCookie.setMaxAge(3 * 60);
+
 			response.addCookie(refreshCookie);
+			
+			return accessToken;
 		}else {
-			result.put("result", false);
 		}
 	
-		Map <String, Object> resultMap = new HashMap<String, Object>();
 		return accessToken;
 	}
 	

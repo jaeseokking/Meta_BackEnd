@@ -22,8 +22,6 @@ public class mainServiceImpl implements mainService {
 
 	@Override
 	public Map<String,Object> login(Map<String, Object> map) {
-		System.out.println("로그인서비스 들어옴");
-
 		Map <String, Object> result = new HashMap <String, Object>();	
 		
 		try {
