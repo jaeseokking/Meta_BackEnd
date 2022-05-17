@@ -42,6 +42,14 @@ public class mainDAO {
 	public List excellist(Map<String, Object> excelinfo) {
 		return sqlSession.selectList(namespace+".excellist",excelinfo);
 	}
+
+	public void stampSetting(Map<String, Object> stampinfo) {
+		sqlSession.selectList(namespace+".stampSetting", stampinfo);
+	}
+
+	public Map<String, Object> getStampSetting(int idx) {
+		return sqlSession.selectOne(namespace+".getStampSetting", idx);
+	}
 	
 
 	

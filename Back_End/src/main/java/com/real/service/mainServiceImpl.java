@@ -27,11 +27,10 @@ public class mainServiceImpl implements mainService {
 		try {
 			map.put("PASS", AES.encryptStringToBase64((String) map.get("PASS")));
 			result = maindao.login(map);
-			
+			System.out.println(map);
 			return result;
 		}catch (Exception e) {
-			
-		
+			System.out.println(e.getLocalizedMessage());		
 		}
 		return result;
 
@@ -64,7 +63,6 @@ public class mainServiceImpl implements mainService {
 
 	@Override
 	public int totalcounts(Map<String, Object> param) {
-		System.out.println("들어옴!!!!!!2");
 
 		return maindao.totalcounts(param);	
 	}
@@ -75,6 +73,20 @@ public class mainServiceImpl implements mainService {
 	public List<Object> excellist(Map<String, Object> excelinfo) {
 			
 		return maindao.excellist(excelinfo);
+	}
+
+
+
+	@Override
+	public void stampSetting(Map<String, Object> stampinfo) {
+		maindao.stampSetting(stampinfo);
+	}
+
+
+
+	@Override
+	public Map<String, Object> getStampSetting(int idx) {
+		return maindao.getStampSetting(idx);
 	}
 
 	

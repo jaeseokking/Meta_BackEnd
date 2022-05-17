@@ -19,5 +19,9 @@ public interface mainService {
 
 	public List excellist(Map<String, Object> excelinfo);
 
+	public void stampSetting(Map<String, Object> stampinfo);
+
+	public Map<String, Object> getStampSetting(int idx);
+
 
 }
