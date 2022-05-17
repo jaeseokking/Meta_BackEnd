@@ -6,8 +6,8 @@
 
 	<!--로그인  -->
 	<select id="login" parameterType="map" resultType="map">
-		SELECT BIZNO FROM TB_MEMBER
-		where  BIZNO = #{SHOP_BIZNO} and PASS = #{PASSWORD}
+		SELECT IDX, BIZNO FROM TB_MEMBER
+		WHERE  BIZNO = #{BIZNO} and PASS = #{PASS}
 	</select>
 	
 	<!-- 회원 총 리스트 개수  -->
@@ -52,4 +52,21 @@
 	<update id="updatePW" parameterType="map" >
 		update TB_MEMBER SET PASSWORD = #{NewPW} WHERE MEMBER_BIZNO = #{SHOP_BIZNO}
 	</update>
+	
+	
+	<!-- 스탬프 세팅 -->
+	<insert id="stampSetting">
+		INSERT INTO TB_STAMP_CONDITION(MINIMUM_PRICE, MINIMUM_COUNT, START_DATE, END_DATE, COMPLETION_STAMP, REWARD, MEMBER_IDX)
+		VALUES(#{minimum_price}, #{minimum_count}, #{startDate}, #{endDate}, #{completion_stamp}, #{reward}, #{MEMBER_IDX})
+		ON DUPLICATE KEY UPDATE
+		MINIMUM_PRICE = #{minimum_price}, MINIMUM_COUNT = #{minimum_count}, START_DATE = #{startDate}, END_DATE = #{endDate}, COMPLETION_STAMP = #{completion_stamp}, REWARD = #{reward}
+	</insert>
+	
+	<!-- 스탬프 값 가져오기 -->
+	<select id="getStampSetting" resultType="map" parameterType="int">
+		SELECT * FROM TB_STAMP_CONDITION
+		WHERE MEMBER_IDX = #{idx}
+	</select>
+	
+
 </mapper>

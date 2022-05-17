@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.real.dto.MemberVo;
+
 public interface mainService {
 	
-	public Map<String,Object> login(Map<String,Object> map) ;
+	public Map<String,Object> login(Map<String, Object> param) ;
 	
 	public List cw_list(Map<String,Object> map);
 	
@@ -16,6 +18,10 @@ public interface mainService {
 	public int totalcounts(Map<String, Object> param);
 
 	public List excellist(Map<String, Object> excelinfo);
+
+	public void stampSetting(Map<String, Object> stampinfo);
+
+	public Map<String, Object> getStampSetting(int idx);
 
 
 }

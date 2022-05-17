@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.real.dao.mainDAO;
+import com.real.dto.MemberVo;
 import com.real.util.AES256;
 
 @Service
@@ -21,26 +22,18 @@ public class mainServiceImpl implements mainService {
 
 	@Override
 	public Map<String,Object> login(Map<String, Object> map) {
-
 		Map <String, Object> result = new HashMap <String, Object>();	
-		
 		try {
-			map.put("PASSWORD", AES.encryptStringToBase64((String) map.get("PASSWORD")));
-//			map.put("PASSWORD", AES.decryptBase64String((String) map.get("PASSWORD")));
-			System.out.println(map);
+			map.put("PASS", AES.encryptStringToBase64((String) map.get("PASS")));
+
 			result = maindao.login(map);
-			if(result.size() > 0) {
-				result.put("result", true);
-			}else {
-				result.put("result", false);
-			}
+			System.out.println(map);
+			return result;
 		}catch (Exception e) {
-			
-		
+			System.out.println(e.getLocalizedMessage());		
 		}
 		return result;
-			
-		
+
 	}
 
 	
@@ -70,7 +63,6 @@ public class mainServiceImpl implements mainService {
 
 	@Override
 	public int totalcounts(Map<String, Object> param) {
-		System.out.println("들어옴!!!!!!2");
 
 		return maindao.totalcounts(param);	
 	}
@@ -81,6 +73,20 @@ public class mainServiceImpl implements mainService {
 	public List<Object> excellist(Map<String, Object> excelinfo) {
 			
 		return maindao.excellist(excelinfo);
+	}
+
+
+
+	@Override
+	public void stampSetting(Map<String, Object> stampinfo) {
+		maindao.stampSetting(stampinfo);
+	}
+
+
+
+	@Override
+	public Map<String, Object> getStampSetting(int idx) {
+		return maindao.getStampSetting(idx);
 	}
 
 	

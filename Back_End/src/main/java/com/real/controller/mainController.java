@@ -3,24 +3,33 @@ package com.real.controller;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
+import com.real.dto.MemberVo;
+import com.real.jwt.JwtTokenProvider;
 import com.real.service.mainService;
+
 
 @Controller
 @RequestMapping("/api")
@@ -28,15 +37,120 @@ public class mainController {
 	@Autowired 
 	mainService mainservice;
 	
-	//로그인 
+    
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    
+    
+    @ResponseBody
+  	@RequestMapping(value="/logout", method=RequestMethod.POST )
+  	public void logout(HttpServletRequest request , HttpServletResponse response) 
+  			throws Exception{
+      	
+      	String refreshToken = "";
+      	
+      	Cookie [] cookies = request.getCookies();
+      	if(cookies != null && cookies.length > 0) {
+      		for(Cookie cookie : cookies) {
+      			if(cookie.getName().equals("refresh_token")) {
+      					Cookie removeCookie = new Cookie("refresh_token", null);
+      					removeCookie.setMaxAge(0);
+      					response.addCookie(removeCookie);
+      				
+      			}
+      		}
+      	}
+   	
+      }
+    
+    
+    @ResponseBody
+	@RequestMapping(value="/refreshToken", method=RequestMethod.POST )
+	public String refreshToken(HttpServletRequest request , HttpServletResponse response) 
+			throws Exception{
+    	
+    	String accessToken = "";
+    	String refreshToken = "";
+    	
+    	Cookie [] cookies = request.getCookies();
+    	if(cookies != null && cookies.length > 0) {
+    		for(Cookie cookie : cookies) {
+    			System.out.println("cookie name : " + cookie.getName());
+    			if(cookie.getName().equals("refresh_token")) {
+    				refreshToken = cookie.getValue();
+    				if(jwtTokenProvider.checkClaim(refreshToken)) {
+    					String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+    					int idx = jwtTokenProvider.getMemberIDX(refreshToken);
+    					System.out.println("bizno :: " + bizno);
+    					accessToken = jwtTokenProvider.getToken(bizno,idx, 1);
+    					Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+    					refreshCookie.setMaxAge(3 * 60);
+    					response.addCookie(refreshCookie);
+    				}else {
+    					Cookie removeCookie = new Cookie("refresh_token", null);
+      					removeCookie.setMaxAge(0);
+      					response.addCookie(removeCookie);
+    					return null;
+    				}
+    			}
+    		}
+    	}
+    	if(refreshToken == null || "".equals(refreshToken)) {
+    		Cookie removeCookie = new Cookie("refresh_token", null);
+			removeCookie.setMaxAge(0);
+			response.addCookie(removeCookie);
+    		return null;
+    	}
+    	
+    	return accessToken;
+    }
+
+    
+
+
+	
+	/**
+	 * 회원정보 확인 및 토큰 발행
+	 * 
+	 * @param member
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value="/login", method=RequestMethod.POST )
-	public Map<String,Object>login(@RequestBody Map<String,Object> memberinfo) {
-			
-		Map <String, Object> resultMap = new HashMap<String, Object>();
+	public String login(@RequestBody MemberVo member , HttpServletRequest request , HttpServletResponse response) throws Exception{
 		
-		return mainservice.login(memberinfo);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("BIZNO", member.getBizno());
+		param.put("PASS", member.getPassword());
+		Map<String, Object> result = mainservice.login(param);
+		
+		String accessToken = "";
+		String refreshToken = "";
+		System.out.print("BIZNO ::" + member.getBizno() + "   PASS" + member.getPassword());
+		System.out.println("회원정보 " + result);
+		//회원정보가 있을 경우
+		if(result.size() > 0) {
+			System.out.println("회원 인증 완료" + result.get("BIZNO"));
+			//result.put("result", true);
+			accessToken = jwtTokenProvider.getToken((String)result.get("BIZNO"), (Integer)result.get("IDX"), 1);
+			refreshToken = jwtTokenProvider.getToken((String)result.get("BIZNO"),(Integer)result.get("IDX"), 3);
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setPath("/");
+			refreshCookie.setMaxAge(3 * 60);
+
+			response.addCookie(refreshCookie);
+			
+			return accessToken;
+		}else {
+		}
+	
+		return accessToken;
 	}
+	
 	
 	//회원의 총 리스트 개수 가져오기 
 	@ResponseBody
@@ -72,4 +186,96 @@ public class mainController {
 		return mainservice.updatePW(updateinfo);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="/stampSetting", method=RequestMethod.POST)
+	public Map<String, Object> StampSetting(@RequestBody Map<String, Object> stampinfo, HttpServletRequest request , HttpServletResponse response) throws Exception {
+		Map<String, Object> result  = new HashMap<String, Object>();
+		
+		String refreshToken = "";
+		
+				
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		
+		if(checkToken.get("result").equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			int idx = jwtTokenProvider.getMemberIDX(refreshToken);
+			
+			stampinfo.put("bizno", bizno);
+			stampinfo.put("MEMBER_IDX", idx);
+
+			try {
+				
+				mainservice.stampSetting(stampinfo);
+				
+				System.out.println(stampinfo);
+			} catch (Exception e) {
+				result.put("result", "INSERT ERROR");
+			}
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setMaxAge(3 * 60);
+			response.addCookie(refreshCookie);
+			result.put("result", "SUCCESS");
+		}else {
+			Cookie removeCookie = new Cookie("refresh_token", null);
+			removeCookie.setMaxAge(0);
+			response.addCookie(removeCookie);
+			
+			if(checkToken.get("result").equals("TOKEN EXPIRED")){
+				result.put("result", "SUCCESS");
+			}else {
+				result.put("result", "TOKEN NULL");
+			}
+		}
+		
+	
+    	return result;
+		
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/getStampSetting", method=RequestMethod.POST)
+	public Map<String, Object> getStampSetting( HttpServletRequest request , HttpServletResponse response) throws Exception {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		
+		String refreshToken = "";
+		
+		if(checkToken.get("result").equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			int idx = jwtTokenProvider.getMemberIDX(refreshToken);
+			System.out.println("?!?" + mainservice.getStampSetting(idx));
+
+			try {
+				result.put("setting", mainservice.getStampSetting(idx));
+				System.out.println(result);
+				
+			} catch (Exception e) {
+				result.put("result", "GET ERROR");
+			}
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setMaxAge(3 * 60);
+			response.addCookie(refreshCookie);
+			result.put("result", "SUCCESS");
+		}else {
+			Cookie removeCookie = new Cookie("refresh_token", null);
+			removeCookie.setMaxAge(0);
+			response.addCookie(removeCookie);
+			
+			if(checkToken.get("result").equals("TOKEN EXPIRED")){
+				result.put("result", "SUCCESS");
+			}else {
+				result.put("result", "TOKEN NULL");
+			}
+		}
+		
+		
+		return result;
+	}
+
 }
