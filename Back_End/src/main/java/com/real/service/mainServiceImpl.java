@@ -23,9 +23,9 @@ public class mainServiceImpl implements mainService {
 	@Override
 	public Map<String,Object> login(Map<String, Object> map) {
 		Map <String, Object> result = new HashMap <String, Object>();	
-		
 		try {
 			map.put("PASS", AES.encryptStringToBase64((String) map.get("PASS")));
+
 			result = maindao.login(map);
 			System.out.println(map);
 			return result;

@@ -199,5 +199,16 @@ public class masterDao {
 	}
 
 
+	/**
+	 * 관리자 업데이트
+	 * @param member
+	 * @return
+	 */
+	public int AdminU(MemberVo member) {
+		// TODO Auto-generated method stub
+		return sqlSession.update(namespace+".AdminU",member);
+	}
+
+
 
 }

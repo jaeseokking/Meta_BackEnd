@@ -11,7 +11,7 @@ public class NoticeVo {
 	private int idx;
 	private String title;
 	private String content;
-	private int permission;
-	private Timestamp date;
+	private boolean permission;
+	private Date date;
 
 }
