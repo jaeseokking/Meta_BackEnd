@@ -1,7 +1,10 @@
 package com.real.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,18 +68,14 @@ public class masterServiceImpl implements masterService {
 	 * Master 관리자 삭제
 	 */
 	@Override
-	public int AdminD(String ListIDX) {
+	public int AdminD(ArrayList ListIDX) {
 		// TODO Auto-generated method stub
 		
-		String[] idxs = ListIDX.split(",");
+//		String[] idxs = ListIDX.split(",");
 		
-		List<String> idx2 = new ArrayList<String>();	
-		for(int i =0; i<idxs.length;i++) {
-			idx2.add(idxs[i]);
-		}
 		
 		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("idx", idx2);
+		param.put("idx", ListIDX);
 		
 		return masterdao.AdminD(param);
 	}
@@ -199,18 +198,12 @@ public class masterServiceImpl implements masterService {
 	 * 공지사항 DELETE
 	 */
 	@Override
-	public int NoticeD(String listIDX) {
+	public int NoticeD(ArrayList listIDX) {
 		// TODO Auto-generated method stub
 		int result = 0; 
 		
-		String[] idxs = listIDX.split(",");
-		List<String> idx2 = new ArrayList<String>();	
-		for(int i =0; i<idxs.length;i++) {
-			idx2.add(idxs[i]);
-		}
-		
 		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("idx", idx2);
+		param.put("idx", listIDX);
 		
 		result = masterdao.NoticeD(param);
 		
@@ -299,6 +292,15 @@ public class masterServiceImpl implements masterService {
 	public int EnquiryR(Map<String, Object> param) {
 		// TODO Auto-generated method stub
 		return masterdao.EnquiryR(param);
+	}
+
+	/**
+	 * 관리자 업데이트
+	 */
+	@Override
+	public int AdminU(MemberVo member) {
+		// TODO Auto-generated method stub
+		return masterdao.AdminU(member);
 	}
 	
 

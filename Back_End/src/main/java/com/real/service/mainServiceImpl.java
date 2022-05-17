@@ -26,6 +26,7 @@ public class mainServiceImpl implements mainService {
 		
 		try {
 			map.put("PASSWORD", AES.encryptStringToBase64((String) map.get("PASSWORD")));
+//			map.put("PASSWORD", AES.decryptBase64String((String) map.get("PASSWORD")));
 			System.out.println(map);
 			result = maindao.login(map);
 			if(result.size() > 0) {

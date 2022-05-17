@@ -1,5 +1,7 @@
 package com.real.service;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.real.dto.MemberVo;
@@ -11,7 +13,7 @@ public interface masterService {
 
 	Map<String, Object> AdminS(String keyword);
 
-	int AdminD(String ListIDX);
+	int AdminD(ArrayList listIDX);
 	
 	MemberVo AdminO(String idx);
 
@@ -23,7 +25,7 @@ public interface masterService {
 
 	int NoticeU(NoticeVo notice);
 
-	int NoticeD(String listIDX);
+	int NoticeD(ArrayList listIDX);
 
 	NoticeVo NoticeO(String idx);
 
@@ -34,6 +36,8 @@ public interface masterService {
 	Map<String, Object> EnquiryO(String idx);
 
 	int EnquiryR(Map<String, Object> param);
+
+	int AdminU(MemberVo member);
 
 
 

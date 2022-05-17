@@ -31,6 +31,13 @@
 		</foreach>
 </delete>
 
+<!-- 관리자 정보 업데이트 -->
+<update id="AdminU" parameterType="com.real.dto.MemberVo">
+ update TB_MEMBER
+ 	set BIZNO=#{bizno},SHOPNAME=#{shopname},SHOPADDR=#{shopaddr},SHOPCALL=#{shopcall}
+ 		where IDX = #{idx}
+</update>
+
 <!-- 관리자 전체수 가져오기 -->
 <select id="countTotalAdmin"  resultType="int">
 	select count(*)
