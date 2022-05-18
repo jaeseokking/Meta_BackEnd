@@ -56,10 +56,41 @@
 	
 	<!-- 스탬프 세팅 -->
 	<insert id="stampSetting">
-		INSERT INTO TB_STAMP_CONDITION(MINIMUM_PRICE, MINIMUM_COUNT, START_DATE, END_DATE, COMPLETION_STAMP, REWARD, MEMBER_IDX)
-		VALUES(#{minimum_price}, #{minimum_count}, #{startDate}, #{endDate}, #{completion_stamp}, #{reward}, #{MEMBER_IDX}, #{STAMP_EXP})
+		INSERT INTO TB_STAMP_CONDITION(
+		<if test="minimum_price != null">
+			MINIMUM_PRICE, 
+		</if>
+		<if test="minimum_cout != null">
+			MINIMUM_COUNT,
+		</if>
+		<if test="stamp_exp != null">
+			STAMP_EXP,
+		</if>
+			START_DATE, END_DATE, COMPLETION_STAMP, REWARD, MEMBER_IDX)
+			
+		VALUES(
+		<if test="minimum_price != null">
+			#{minimum_price}, 
+		</if>
+		<if test="minimum_count != null">
+			#{minimum_count},
+		</if>
+		<if test="stamp_exp != null">
+			#{stamp_exp},
+		</if>
+		 #{startDate}, #{endDate}, #{completion_stamp}, #{reward}, #{MEMBER_IDX}, 
+		 )
 		ON DUPLICATE KEY UPDATE
-		MINIMUM_PRICE = #{minimum_price}, MINIMUM_COUNT = #{minimum_count}, START_DATE = #{startDate}, END_DATE = #{endDate}, COMPLETION_STAMP = #{completion_stamp}, REWARD = #{reward}, STAMP_EXP = #{STAMP_EXP}
+		<if test="minimum_price != null">
+			MINIMUM_PRICE = #{minimum_price},
+		</if>
+		<if test="minimum_price != null">
+			 MINIMUM_COUNT = #{minimum_count},
+		</if>
+		<if test="minimum_price != null">
+			STAMP_EXP = #{STAMP_EXP}, 
+		</if>
+		 	START_DATE = #{startDate}, END_DATE = #{endDate}, COMPLETION_STAMP = #{completion_stamp}, REWARD = #{reward} 
 	</insert>
 	
 	<!-- 스탬프 값 가져오기 -->
