@@ -68,4 +68,5 @@
 		WHERE MEMBER_IDX = #{idx}
 	</select>
 	
+
 </mapper>

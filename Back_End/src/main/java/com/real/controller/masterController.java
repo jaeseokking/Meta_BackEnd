@@ -1,6 +1,8 @@
 package com.real.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mysql.fabric.xmlrpc.base.Array;
+import com.real.config.CORSFilter;
 import com.real.dto.MemberVo;
 import com.real.dto.NoticeVo;
 import com.real.service.masterService;
@@ -20,6 +24,7 @@ public class masterController {
 	
 	@Autowired
 	private masterService masterservice;
+	
 	
 	/**
 	 * Master가 admin 추가
@@ -66,9 +71,12 @@ public class masterController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/AdminD", method=RequestMethod.POST)
-	public int AdminD (@RequestBody String ListIDX) {
+	public int AdminD (@RequestBody Map<String,Object> map) {
 		
 		int result = 0;
+		System.out.println(map);
+//		String ListIDX = (String) map.get("list");
+		ArrayList ListIDX = (ArrayList) map.get("list");
 		result = masterservice.AdminD(ListIDX);
 		return result;
 	}
@@ -81,13 +89,30 @@ public class masterController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/AdminG", method=RequestMethod.POST)
-	public Map<String,Object> AdminG (@RequestBody String page) {
+	public Map<String,Object> AdminG (@RequestBody Map<String,Object> map) {
 		
+		String page = (String) map.get("page");
 		Map<String,Object> result = new HashMap<String,Object>();
 		result = masterservice.AdminG(page);
 		return result;
 	}
 	
+	/**
+	 * Admin Update
+	 * Admin Update
+	 * @param member
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/AdminU", method=RequestMethod.POST)
+	public int AdminU (@RequestBody MemberVo member) {
+		
+		int result = 0; 
+		
+		result = masterservice.AdminU(member);
+		
+		return result;
+	}
 	
 	/**
 	 * 관리자 한개 가져오기
@@ -97,7 +122,8 @@ public class masterController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/AdminO", method=RequestMethod.POST)
-	public MemberVo AdminO(@RequestBody String idx) {
+	public MemberVo AdminO(@RequestBody Map<String,Object> map ) {
+		String idx = (String) map.get("idx");
 		MemberVo member = masterservice.AdminO(idx);
 		return member;
 	}
@@ -111,8 +137,12 @@ public class masterController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/NoticeL",method=RequestMethod.POST)
-	public Map<String,Object> NoticeL (@RequestBody String page){
+	public Map<String,Object> NoticeL (@RequestBody Map<String,Object> map){
 		Map<String,Object> result = new HashMap<String,Object>();
+		String page = (String) map.get("page");
+		if(page == null) {
+			page = "1";
+		}
 		result = masterservice.NoticeL(page);
 		return result;
 	}
@@ -154,8 +184,9 @@ public class masterController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/NoticeD",method=RequestMethod.POST)
-	public int NoticeD(@RequestBody String ListIDX) {
+	public int NoticeD(@RequestBody Map<String,Object> map) {
 		int result = 0;
+		ArrayList ListIDX = (ArrayList) map.get("list");
 		result = masterservice.NoticeD(ListIDX);
 		return result;
 	}
@@ -168,7 +199,9 @@ public class masterController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/NoticeO",method=RequestMethod.POST)
-	public NoticeVo NoticeO(@RequestBody String idx) {
+	public NoticeVo NoticeO(@RequestBody Map<String,Object> map) {
+		
+		 String idx = (String) map.get("idx");
 		
 		NoticeVo notice = masterservice.NoticeO(idx);
 		
@@ -197,8 +230,12 @@ public class masterController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/EnquiryL", method=RequestMethod.POST)
-	public Map<String,Object> EnquiryL(@RequestBody String page){
+	public Map<String,Object> EnquiryL(@RequestBody Map<String,Object> map){
 		Map<String,Object> result = new HashMap<String,Object>();
+		String page = (String) map.get("page");
+		if(page == null) {
+			page = "1";
+		}
 		result = masterservice.EnquiryL(page);
 		return result;
 		
