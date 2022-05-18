@@ -187,6 +187,15 @@ public class mainController {
 		return mainservice.updatePW(updateinfo);
 	}
 	
+	/**
+	 * 스탬프 조건 설정 
+	 * 
+	 * @param stampinfo
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value="/stampSetting", method=RequestMethod.POST)
 	public Map<String, Object> StampSetting(@RequestBody Map<String, Object> stampinfo, HttpServletRequest request , HttpServletResponse response) throws Exception {
