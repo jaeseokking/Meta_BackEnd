@@ -54,8 +54,9 @@ public class masterController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/AdminS",method=RequestMethod.POST)
-	public Map<String,Object> AdminS(@RequestBody String keyword){
+	public Map<String,Object> AdminS(@RequestBody Map<String,Object> map ){
 		
+		String keyword = (String) map.get("keyword");
 		Map<String,Object> result = new HashMap<String,Object>();
 		result = masterservice.AdminS(keyword);
 		return result;
@@ -249,7 +250,9 @@ public class masterController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/EnquiryO",method=RequestMethod.POST)
-	public Map<String,Object> EnquiryO(@RequestBody String idx){
+	public Map<String,Object> EnquiryO(@RequestBody Map<String,Object> map){
+		
+	    String idx = (String) map.get("idx");
 		Map<String,Object> result = new HashMap<String,Object>();
 		
 		result = masterservice.EnquiryO(idx);
@@ -266,6 +269,17 @@ public class masterController {
 	@RequestMapping(value="/EnquiryR",method=RequestMethod.POST)
 	public int EnquiryR(@RequestBody Map<String,Object> param) {
 		return masterservice.EnquiryR(param);
+	}
+	
+	/**
+	 * 문의사항 5개 가져오기
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/EnquiryF",method=RequestMethod.POST)
+	public Map<String,Object> EnquiryF(@RequestBody Map<String,Object> param) {
+		return masterservice.EnquiryF(param);
 	}
 
 }

@@ -302,6 +302,16 @@ public class masterServiceImpl implements masterService {
 		// TODO Auto-generated method stub
 		return masterdao.AdminU(member);
 	}
+
+
+	@Override
+	public  Map<String,Object> EnquiryF(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		 Map<String,Object> map = new HashMap<String,Object>();
+		 List<Map<String,Object>> list = masterdao.EnquiryF(param);
+		 map.put("list", list);
+		return map;
+	}
 	
 
 }
