@@ -57,9 +57,9 @@
 	<!-- 스탬프 세팅 -->
 	<insert id="stampSetting">
 		INSERT INTO TB_STAMP_CONDITION(MINIMUM_PRICE, MINIMUM_COUNT,STAMP_EXP, START_DATE, END_DATE, COMPLETION_STAMP, REWARD, MEMBER_IDX)
-		VALUES(#{minimum_price, jdbcType=INTEGER}, #{minimum_count, jdbcType=INTEGER},#{stamp_exp, jdbcType=INTEGER}, #{startDate}, #{endDate}, #{completion_stamp}, #{reward}, #{MEMBER_IDX})
+		VALUES(#{minimum_price, jdbcType=int}, #{minimum_count, jdbcType=int},#{stamp_exp, jdbcType=int}, #{startDate}, #{endDate}, #{completion_stamp}, #{reward}, #{MEMBER_IDX})
 		ON DUPLICATE KEY UPDATE
-		MINIMUM_PRICE = #{minimum_price, jdbcType=INTEGER}, MINIMUM_COUNT = #{minimum_count, jdbcType=INTEGER}, STAMP_EXP = #{stamp_exp, jdbcType=INTEGER} START_DATE = #{startDate}, END_DATE = #{endDate}, COMPLETION_STAMP = #{completion_stamp}, REWARD = #{reward}
+		MINIMUM_PRICE = #{minimum_price, jdbcType=int}, MINIMUM_COUNT = #{minimum_count, jdbcType=int}, STAMP_EXP = #{stamp_exp, jdbcType=int} START_DATE = #{startDate}, END_DATE = #{endDate}, COMPLETION_STAMP = #{completion_stamp}, REWARD = #{reward}
 	</insert>
 	
 	<!-- 스탬프 값 가져오기 -->
