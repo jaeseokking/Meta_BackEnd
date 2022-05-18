@@ -56,7 +56,7 @@ public class mainServiceImpl implements mainService {
 	}
 
 	@Override
-	public int updatePW(Map<String, Object> updateinfo) {
+	public int updatePW(MemberVo updateinfo) {
 		
 		return maindao.updatePW(updateinfo);
 	}
