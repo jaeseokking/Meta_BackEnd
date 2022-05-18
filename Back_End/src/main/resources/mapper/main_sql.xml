@@ -50,16 +50,16 @@
 	
 	<!-- 비밀번호 변경  -->
 	<update id="updatePW" parameterType="map" >
-		update TB_MEMBER SET PASSWORD = #{NewPW} WHERE MEMBER_BIZNO = #{SHOP_BIZNO}
+		update TB_MEMBER SET PASSWORD = #{NewPW} WHERE MEMBER_BIZNO = #{BIZNO}
 	</update>
 	
 	
 	<!-- 스탬프 세팅 -->
 	<insert id="stampSetting">
-		INSERT INTO TB_STAMP_CONDITION(MINIMUM_PRICE, MINIMUM_COUNT, START_DATE, END_DATE, COMPLETION_STAMP, REWARD, MEMBER_IDX)
-		VALUES(#{minimum_price}, #{minimum_count}, #{startDate}, #{endDate}, #{completion_stamp}, #{reward}, #{MEMBER_IDX}, #{STAMP_EXP})
+		INSERT INTO TB_STAMP_CONDITION(MINIMUM_PRICE, MINIMUM_COUNT,STAMP_EXP, START_DATE, END_DATE, COMPLETION_STAMP, REWARD, MEMBER_IDX)
+		VALUES(#{minimum_price, jdbcType=INTEGER}, #{minimum_count, jdbcType=INTEGER},#{stamp_exp, jdbcType=INTEGER}, #{startDate}, #{endDate}, #{completion_stamp}, #{reward}, #{MEMBER_IDX})
 		ON DUPLICATE KEY UPDATE
-		MINIMUM_PRICE = #{minimum_price}, MINIMUM_COUNT = #{minimum_count}, START_DATE = #{startDate}, END_DATE = #{endDate}, COMPLETION_STAMP = #{completion_stamp}, REWARD = #{reward}, STAMP_EXP = #{STAMP_EXP}
+		MINIMUM_PRICE = #{minimum_price, jdbcType=INTEGER}, MINIMUM_COUNT = #{minimum_count, jdbcType=INTEGER}, STAMP_EXP = #{stamp_exp, jdbcType=INTEGER}, START_DATE = #{startDate}, END_DATE = #{endDate}, COMPLETION_STAMP = #{completion_stamp}, REWARD = #{reward}
 	</insert>
 	
 	<!-- 스탬프 값 가져오기 -->
