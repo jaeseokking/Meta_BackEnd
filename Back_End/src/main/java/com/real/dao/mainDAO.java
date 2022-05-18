@@ -23,7 +23,7 @@ public class mainDAO {
 		return sqlSession.selectOne(namespace+".login", map);
 	}
 	
-	public int updatePW(Map<String, Object> updateinfo) {
+	public int updatePW(MemberVo updateinfo) {
 		return sqlSession.update(namespace+".updatePW", updateinfo);
 	}
 
