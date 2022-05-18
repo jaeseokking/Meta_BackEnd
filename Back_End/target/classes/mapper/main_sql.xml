@@ -84,10 +84,10 @@
 		<if test="minimum_price != null">
 			MINIMUM_PRICE = #{minimum_price},
 		</if>
-		<if test="minimum_price != null">
+		<if test="minimum_count != null">
 			 MINIMUM_COUNT = #{minimum_count},
 		</if>
-		<if test="minimum_price != null">
+		<if test="stamp_exp != null">
 			STAMP_EXP = #{STAMP_EXP}, 
 		</if>
 		 	START_DATE = #{startDate}, END_DATE = #{endDate}, COMPLETION_STAMP = #{completion_stamp}, REWARD = #{reward} 
