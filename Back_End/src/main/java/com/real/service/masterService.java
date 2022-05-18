@@ -39,6 +39,8 @@ public interface masterService {
 
 	int AdminU(MemberVo member);
 
+	 Map<String,Object> EnquiryF(Map<String, Object> param);
+
 
 
 }
