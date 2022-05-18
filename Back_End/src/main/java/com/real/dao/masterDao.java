@@ -210,5 +210,11 @@ public class masterDao {
 	}
 
 
+	public List<Map<String,Object>> EnquiryF(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(namespace+".EnquiryF",param);
+	}
+
+
 
 }

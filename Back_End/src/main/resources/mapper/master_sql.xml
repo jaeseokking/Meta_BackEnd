@@ -13,7 +13,7 @@
 <!-- master 가 관리자 search -->
 <select id="AdminS" parameterType="String" resultType="map">
 
- select ID,SHOPNAME,SHOPADDR,SHOPCALL
+ select BIZNO,SHOPNAME,SHOPADDR,SHOPCALL,IDX
  	from TB_MEMBER
  		where BIZNO LIKE CONCAT('%',#{keyword},'%') or SHOPNAME LIKE CONCAT('%',#{keyword},'%') 
  			or SHOPADDR LIKE CONCAT('%',#{keyword},'%')
@@ -143,5 +143,11 @@
 	insert into TB_ENQUIRY_REPLY(CONTENT,ENQUIRY_NUM)
 		values(#{content},#{idx})
 </insert>
+
+<select id="EnquiryF" parameterType="map" resultType="map">
+	select * from TB_ENQUIRY
+		order by DATE desc
+			limit 5
+</select>
 
 </mapper>
