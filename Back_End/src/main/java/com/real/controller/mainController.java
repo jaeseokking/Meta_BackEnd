@@ -203,6 +203,7 @@ public class mainController {
 		
 		String refreshToken = "";
 		
+		System.out.println(stampinfo);
 				
 		Cookie [] cookies = request.getCookies();
 		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
