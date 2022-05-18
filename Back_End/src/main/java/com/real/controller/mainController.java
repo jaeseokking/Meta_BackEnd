@@ -146,7 +146,6 @@ public class mainController {
 			response.addCookie(refreshCookie);
 			
 			return accessToken;
-		}else {
 		}
 	
 		return accessToken;
@@ -181,11 +180,11 @@ public class mainController {
 	}
 	
 	//비밀번호 변경
-	@ResponseBody
-	@RequestMapping(value="/passwordEdit", method=RequestMethod.POST)
-	public int 비밀번호변경(@RequestBody MemberVo updateinfo) {
-		return mainservice.updatePW(updateinfo);
-	}
+//	@ResponseBody
+//	@RequestMapping(value="/passwordEdit", method=RequestMethod.POST)
+//	public int 비밀번호변경(@RequestBody MemberVo updateinfo) {
+//		return mainservice.updatePW(updateinfo);
+//	}
 	
 	/**
 	 * 스탬프 조건 설정 
@@ -287,6 +286,42 @@ public class mainController {
 		
 		
 		return result;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/passwordEdit", method=RequestMethod.POST)
+	public int passwordEdit (@RequestBody Map<String, Object> updateinfo , HttpServletRequest request , HttpServletResponse response) throws Exception {		
+		String refreshToken = "";
+		
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		String status = (String) checkToken.get("result");
+		
+		if(status.equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("BIZNO", bizno);
+			param.put("PASS", updateinfo.get("currentPW"));
+			Map<String, Object> result = mainservice.login(param);
+			
+			if(result.size() > 0) {
+				//비밀번호 변경 1 , 비밀번호 미변경 0
+				return mainservice.updatePW(param);
+			//비밀번호 정보 틀린경우
+			}else {
+				return 2;
+			}
+		//토큰 만료된경우
+		}else{
+			return 3;
+		}
+
+		
+    
+		
 	}
 
 }

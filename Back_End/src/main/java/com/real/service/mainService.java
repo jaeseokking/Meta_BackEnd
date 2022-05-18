@@ -13,7 +13,7 @@ public interface mainService {
 	
 	public List cw_list(Map<String,Object> map);
 	
-	public int updatePW(MemberVo updateinfo);
+	public int updatePW(Map<String, Object> param);
 
 	public int totalcounts(Map<String, Object> param);
 
