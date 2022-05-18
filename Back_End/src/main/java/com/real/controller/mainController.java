@@ -70,6 +70,7 @@ public class mainController {
 	public String refreshToken(HttpServletRequest request , HttpServletResponse response) 
 			throws Exception{
     	
+    	System.out.println("REFRESH TOKEN");
     	String accessToken = "";
     	String refreshToken = "";
     	
@@ -83,9 +84,9 @@ public class mainController {
     					String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
     					int idx = jwtTokenProvider.getMemberIDX(refreshToken);
     					System.out.println("bizno :: " + bizno);
-    					accessToken = jwtTokenProvider.getToken(bizno,idx, 1);
+    					accessToken = jwtTokenProvider.getToken(bizno,idx, 10);
     					Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
-    					refreshCookie.setMaxAge(3 * 60);
+    					refreshCookie.setMaxAge(30 * 60);
     					response.addCookie(refreshCookie);
     				}else {
     					Cookie removeCookie = new Cookie("refresh_token", null);
@@ -135,12 +136,12 @@ public class mainController {
 		if(result.size() > 0) {
 			System.out.println("회원 인증 완료" + result.get("BIZNO"));
 			//result.put("result", true);
-			accessToken = jwtTokenProvider.getToken((String)result.get("BIZNO"), (Integer)result.get("IDX"), 1);
-			refreshToken = jwtTokenProvider.getToken((String)result.get("BIZNO"),(Integer)result.get("IDX"), 3);
+			accessToken = jwtTokenProvider.getToken((String)result.get("BIZNO"), (Integer)result.get("IDX"), 10);
+			refreshToken = jwtTokenProvider.getToken((String)result.get("BIZNO"),(Integer)result.get("IDX"), 30);
 			
 			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
 			refreshCookie.setPath("/");
-			refreshCookie.setMaxAge(3 * 60);
+			refreshCookie.setMaxAge(30 * 60);
 
 			response.addCookie(refreshCookie);
 			
@@ -181,8 +182,8 @@ public class mainController {
 	
 	//비밀번호 변경
 	@ResponseBody
-	@RequestMapping(value="/update", method=RequestMethod.POST)
-	public int 비밀번호변경(@RequestBody Map<String, Object> updateinfo) {
+	@RequestMapping(value="/passwordEdit", method=RequestMethod.POST)
+	public int 비밀번호변경(@RequestBody MemberVo updateinfo) {
 		return mainservice.updatePW(updateinfo);
 	}
 	
@@ -215,7 +216,7 @@ public class mainController {
 			}
 			
 			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
-			refreshCookie.setMaxAge(3 * 60);
+			refreshCookie.setMaxAge(30 * 60);
 			response.addCookie(refreshCookie);
 			result.put("result", "SUCCESS");
 		}else {
@@ -259,7 +260,7 @@ public class mainController {
 			}
 			
 			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
-			refreshCookie.setMaxAge(3 * 60);
+			refreshCookie.setMaxAge(30 * 60);
 			response.addCookie(refreshCookie);
 			result.put("result", "SUCCESS");
 		}else {
