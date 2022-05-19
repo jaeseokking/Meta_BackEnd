@@ -133,7 +133,7 @@ public class mainController {
 		System.out.print("BIZNO ::" + member.getBizno() + "   PASS" + member.getPassword());
 		System.out.println("회원정보 " + result);
 		//회원정보가 있을 경우
-		if(result.size() > 0) {
+		if(result != null) {
 			System.out.println("회원 인증 완료" + result.get("BIZNO"));
 			//result.put("result", true);
 			accessToken = jwtTokenProvider.getToken((String)result.get("BIZNO"), (Integer)result.get("IDX"), 10);
@@ -155,9 +155,32 @@ public class mainController {
 	//회원의 총 리스트 개수 가져오기 
 	@ResponseBody
 	@RequestMapping(value="/board/counts", method=RequestMethod.POST)
-	public int 총리스트개수 (@RequestBody Map<String,Object> listinfo) {
+	public int 총리스트개수 (@RequestBody Map<String,Object> listinfo, HttpServletRequest request , HttpServletResponse response) throws Exception {
 		System.out.println("총 리스트 전달 map : " + listinfo);
-		return mainservice.totalcounts(listinfo);
+		
+
+		String refreshToken = "";
+		
+		
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		String status = (String) checkToken.get("result");
+		
+		if(status.equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			
+			Map<String, Object> param = new HashMap<String, Object>();
+			listinfo.put("BIZNO", bizno);
+			
+			return mainservice.totalcounts(listinfo);
+
+		//토큰 만료된경우
+		}else{
+			return 3;
+		}
+		
+		
 	}
 	
 
@@ -165,7 +188,6 @@ public class mainController {
 	@ResponseBody
 	@RequestMapping(value="/board", method=RequestMethod.POST)
 	public  List 리스트가져오기 (@RequestBody Map<String,Object> listinfo) {
-		System.out.println(listinfo);
 		return mainservice.cw_list(listinfo);
 		
 	}
@@ -294,6 +316,8 @@ public class mainController {
 	public int passwordEdit (@RequestBody Map<String, Object> updateinfo , HttpServletRequest request , HttpServletResponse response) throws Exception {		
 		String refreshToken = "";
 		
+		System.out.println(updateinfo);
+		
 		Cookie [] cookies = request.getCookies();
 		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
 		String status = (String) checkToken.get("result");
@@ -307,7 +331,8 @@ public class mainController {
 			param.put("PASS", updateinfo.get("currentPW"));
 			Map<String, Object> result = mainservice.login(param);
 			
-			if(result.size() > 0) {
+			if(result !=  null) {
+				param.put("NewPW", updateinfo.get("NewPW"));
 				//비밀번호 변경 1 , 비밀번호 미변경 0
 				return mainservice.updatePW(param);
 			//비밀번호 정보 틀린경우

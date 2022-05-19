@@ -12,7 +12,7 @@
 	
 	<!-- 회원 총 리스트 개수  -->
 	<select id="totalcounts" parameterType="map" resultType="int">
-		select count(*) from TB_RECEIPT_ISSUE where SHOP_BIZNO = #{shop_bizno} 
+		select count(*) from TB_RECEIPT_STAMP where SHOP_BIZNO = #{BIZNO} 
 		<if test="startDate != 0 and endDate != 0">
 			and FRT_CREA_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
 		</if>
@@ -50,7 +50,7 @@
 	
 	<!-- 비밀번호 변경  -->
 	<update id="updatePW" parameterType="map" >
-		update TB_MEMBER SET PASSWORD = #{NewPW} WHERE MEMBER_BIZNO = #{BIZNO}
+		update TB_MEMBER SET PASS = #{NewPW} WHERE BIZNO = #{BIZNO}
 	</update>
 	
 	
