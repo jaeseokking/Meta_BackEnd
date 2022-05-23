@@ -41,6 +41,8 @@ public interface masterService {
 
 	 Map<String,Object> EnquiryF(Map<String, Object> param);
 
+	int LoginM(Map<String, Object> param);
+
 
 
 }
