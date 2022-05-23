@@ -57,8 +57,16 @@ public class mainServiceImpl implements mainService {
 
 	@Override
 	public int updatePW(Map<String, Object> updateinfo) {
+		try {
+			updateinfo.put("NewPW", AES.encryptStringToBase64((String) updateinfo.get("NewPW")));
+			
+			return maindao.updatePW(updateinfo);
+		}catch (Exception e) {
+			System.out.println(e.getLocalizedMessage());		
+			return 0;
+		}
+	
 		
-		return maindao.updatePW(updateinfo);
 	}
 
 	@Override
