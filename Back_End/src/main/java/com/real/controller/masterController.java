@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -283,22 +280,6 @@ public class masterController {
 	@RequestMapping(value="/EnquiryF",method=RequestMethod.POST)
 	public Map<String,Object> EnquiryF(@RequestBody Map<String,Object> param) {
 		return masterservice.EnquiryF(param);
-	}
-	
-	@ResponseBody
-	@RequestMapping(value="/LoginM",method = RequestMethod.POST)
-	public Map<String,Object> LoginM (@RequestBody Map<String,Object> param,HttpServletRequest request){
-		Map<String,Object> map = new HashMap<String,Object>();
-		
-		int result = masterservice.LoginM(param);
-		if(result == 1) {
-			HttpSession se = request.getSession();
-			se.setAttribute("Okadmin", 1);
-			
-		}
-		map.put("result",result);
-		return map;
-		
 	}
 
 }
