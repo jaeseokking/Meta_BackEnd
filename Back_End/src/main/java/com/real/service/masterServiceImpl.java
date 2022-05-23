@@ -312,6 +312,18 @@ public class masterServiceImpl implements masterService {
 		 map.put("list", list);
 		return map;
 	}
+
+
+	@Override
+	public int LoginM(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		String pass = (String)param.get("pass");
+		String npass = AES.encryptStringToBase64(pass);
+		param.put("npass", npass);
+		
+		return masterdao.LoginM(param);
+		
+	}
 	
 
 }

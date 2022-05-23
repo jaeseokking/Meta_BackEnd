@@ -6,18 +6,16 @@
 
 <!-- master 에서 관리자 추가하기 -->
 <insert id="AdminA" parameterType="map">
- insert into TB_MEMBER(BIZNO,PASS,SHOPNAME,SHOPADDR,SHOPCALL)
- 	values(#{bizno},#{password},#{shopname},#{shopaddr},#{shopcall})
+ insert into TB_MEMBER(BIZNO,PASS,CEONAME,CEOCALL)
+ 	values(#{bizno},#{password},#{ceoname},#{ceocall})
 </insert>
 
 <!-- master 가 관리자 search -->
 <select id="AdminS" parameterType="String" resultType="map">
 
- select BIZNO,SHOPNAME,SHOPADDR,SHOPCALL,IDX
+ select BIZNO,CEONAME,CEOCALL,IDX
  	from TB_MEMBER
- 		where BIZNO LIKE CONCAT('%',#{keyword},'%') or SHOPNAME LIKE CONCAT('%',#{keyword},'%') 
- 			or SHOPADDR LIKE CONCAT('%',#{keyword},'%')
- 		 		or SHOPCALL LIKE CONCAT('%',#{keyword},'%')
+ 		where BIZNO LIKE CONCAT('%',#{keyword},'%') or CEONAME LIKE CONCAT('%',#{keyword},'%') 
 </select>
 
 
@@ -34,7 +32,7 @@
 <!-- 관리자 정보 업데이트 -->
 <update id="AdminU" parameterType="com.real.dto.MemberVo">
  update TB_MEMBER
- 	set BIZNO=#{bizno},SHOPNAME=#{shopname},SHOPADDR=#{shopaddr},SHOPCALL=#{shopcall}
+ 	set BIZNO=#{bizno},CEONAME=#{ceoname},CEOCALL=#{ceocall}
  		where IDX = #{idx}
 </update>
 
@@ -46,7 +44,7 @@
 
 <!-- 리스트 가져오기 페이징 처리한 -->
 <select id="AdminG" resultType="map" parameterType="com.real.util.Criteria">
-	SELECT BIZNO,SHOPNAME,SHOPADDR,SHOPCALL,IDX
+	SELECT BIZNO,CEONAME,CEOCALL,IDX
 	FROM TB_MEMBER
 	ORDER BY IDX DESC
 	LIMIT #{pageStart},#{perPageNum}
@@ -54,7 +52,7 @@
 
 <!-- 관리자정보 한개 가져오기 -->
 <select id="AdminO" parameterType="String" resultType="com.real.dto.MemberVo">
-	select IDX,BIZNO,SHOPNAME,SHOPADDR,SHOPCALL
+	select IDX,BIZNO,CEONAME,CEOCALL
 		from TB_MEMBER
 			where IDX = #{idx}
 
@@ -148,6 +146,12 @@
 	select * from TB_ENQUIRY
 		order by DATE desc
 			limit 5
+</select>
+
+<select id="LoginM" parameterType="map" resultType="int">
+	select count(*)
+		from TB_MASTER
+			where ID= #{id} and PASSWORD = #{pass}
 </select>
 
 </mapper>
