@@ -23,5 +23,7 @@ public interface mainService {
 
 	public Map<String, Object> getStampSetting(int idx);
 
+	public List stampList(Map<String, Object> data);
+
 
 }

@@ -183,12 +183,41 @@ public class mainController {
 		
 	}
 	
-
-	//페이징 리스트 가져오기 
+//
+//	//페이징 리스트 가져오기 
+//	@ResponseBody
+//	@RequestMapping(value="/board", method=RequestMethod.POST)
+//	public  List 리스트가져오기 (@RequestBody Map<String,Object> listinfo) {
+//		return mainservice.cw_list(listinfo);
+//		
+//	}
+	
 	@ResponseBody
-	@RequestMapping(value="/board", method=RequestMethod.POST)
-	public  List 리스트가져오기 (@RequestBody Map<String,Object> listinfo) {
-		return mainservice.cw_list(listinfo);
+	@RequestMapping(value="/stamp/board", method=RequestMethod.POST)
+	public Map<String, Object> stampList (@RequestBody Map<String, Object> data, HttpServletRequest request , HttpServletResponse response) throws Exception {
+		String refreshToken = "";
+		Map<String, Object> stampMap = new HashMap<String, Object>();
+		
+		
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		String status = (String) checkToken.get("result");
+		
+		if(status.equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			
+			data.put("BIZNO", bizno);
+			System.out.println("DATA :::: " +data);
+			stampMap.put("stampList", mainservice.stampList(data));
+
+			stampMap.put("result", 1);
+		//토큰 만료된경우
+		}else{
+			stampMap.put("result", 0);
+		}
+		
+		return stampMap;
 		
 	}
 	

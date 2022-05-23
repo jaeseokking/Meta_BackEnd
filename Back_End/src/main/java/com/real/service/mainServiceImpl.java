@@ -97,6 +97,23 @@ public class mainServiceImpl implements mainService {
 		return maindao.getStampSetting(idx);
 	}
 
+
+
+	@Override
+	public List stampList(Map<String, Object> data) {
+		
+		int page = (Integer) data.get("page");
+		
+		if(page < 1) {
+			return null;
+		}else {
+			int firstpage = (page - 1) * 10;
+			data.put("firstpage", firstpage);
+			return maindao.stampList(data);
+		}
+		
+	}
+
 	
 	
 	
