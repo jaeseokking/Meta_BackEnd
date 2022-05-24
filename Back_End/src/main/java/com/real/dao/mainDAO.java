@@ -53,6 +53,10 @@ public class mainDAO {
 	public List stampList(Map<String, Object> data) {
 		return sqlSession.selectList(namespace+".stampList", data);
 	}
+
+	public Map<String, Object> getStampDetail(Map<String, Object> map) {
+		return sqlSession.selectOne(namespace+".getStampDetail", map);
+	}
 	
 
 	

@@ -25,5 +25,7 @@ public interface mainService {
 
 	public List stampList(Map<String, Object> data);
 
+	public Map<String, Object> getStampDetail(Map<String, Object> map);
+
 
 }

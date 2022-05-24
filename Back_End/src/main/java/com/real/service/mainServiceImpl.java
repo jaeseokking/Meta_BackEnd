@@ -114,6 +114,13 @@ public class mainServiceImpl implements mainService {
 		
 	}
 
+
+
+	@Override
+	public Map<String, Object> getStampDetail(Map<String, Object> map) {
+		return maindao.getStampDetail(map);
+	}
+
 	
 	
 	
