@@ -4,15 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-<<<<<<< HEAD
-=======
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
->>>>>>> branch 'master' of https://github.com/jaeseokking/Meta_BackEnd.git
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -293,8 +289,7 @@ public class masterController {
 	public Map<String,Object> EnquiryF(@RequestBody Map<String,Object> param) {
 		return masterservice.EnquiryF(param);
 	}
-<<<<<<< HEAD
-=======
+
 	
 	@ResponseBody
 	@RequestMapping(value="/LoginM",method = RequestMethod.POST)
@@ -328,6 +323,5 @@ public class masterController {
 		return map;
 		
 	}
->>>>>>> branch 'master' of https://github.com/jaeseokking/Meta_BackEnd.git
 
 }
