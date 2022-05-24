@@ -315,7 +315,7 @@ public class masterServiceImpl implements masterService {
 
 
 	@Override
-	public int LoginM(Map<String, Object> param) {
+	public Map<String, Object> LoginM(Map<String, Object> param) {
 		// TODO Auto-generated method stub
 		String pass = (String)param.get("pass");
 		String npass = AES.encryptStringToBase64(pass);
