@@ -148,8 +148,8 @@
 			limit 5
 </select>
 
-<select id="LoginM" parameterType="map" resultType="int">
-	select count(*)
+<select id="LoginM" parameterType="map" resultType="map">
+	select count(*) count , IDX, ID
 		from TB_MASTER
 			where ID= #{id} and PASSWORD = #{pass}
 </select>

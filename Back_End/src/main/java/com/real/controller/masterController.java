@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import com.mysql.fabric.xmlrpc.base.Array;
 import com.real.config.CORSFilter;
 import com.real.dto.MemberVo;
 import com.real.dto.NoticeVo;
+import com.real.jwt.JwtTokenProvider;
 import com.real.service.masterService;
 
 @Controller
@@ -27,6 +30,9 @@ public class masterController {
 	
 	@Autowired
 	private masterService masterservice;
+	
+  @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 	
 	
 	/**
@@ -287,16 +293,33 @@ public class masterController {
 	
 	@ResponseBody
 	@RequestMapping(value="/LoginM",method = RequestMethod.POST)
-	public Map<String,Object> LoginM (@RequestBody Map<String,Object> param,HttpServletRequest request){
+	public Map<String,Object> LoginM (@RequestBody Map<String,Object> param,HttpServletRequest request , HttpServletResponse response){
 		Map<String,Object> map = new HashMap<String,Object>();
 		
-		int result = masterservice.LoginM(param);
-		if(result == 1) {
+		Map<String,Object> result = masterservice.LoginM(param);
+		String accessToken = "";
+		String refreshToken = "";
+		
+		if((Long)result.get("count") == 1) {
 			HttpSession se = request.getSession();
 			se.setAttribute("Okadmin", 1);
 			
+			accessToken = jwtTokenProvider.getToken((String)result.get("ID"), (Integer)result.get("IDX"), 10);
+			refreshToken = jwtTokenProvider.getToken((String)result.get("ID"),(Integer)result.get("IDX"), 30);
+			
+			map.put("result",result.get("count"));
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setPath("/");
+			refreshCookie.setMaxAge(30 * 60);
+
+			response.addCookie(refreshCookie);
+			
+			map.put("data", accessToken);
+			
+			return map;
+			
 		}
-		map.put("result",result);
+		map.put("result",result.get("count"));
 		return map;
 		
 	}

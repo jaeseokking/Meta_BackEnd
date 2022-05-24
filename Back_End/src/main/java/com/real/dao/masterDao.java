@@ -216,7 +216,7 @@ public class masterDao {
 	}
 
 
-	public int LoginM(Map<String, Object> param) {
+	public Map<String, Object> LoginM(Map<String, Object> param) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(namespace+".LoginM",param);
 	}
