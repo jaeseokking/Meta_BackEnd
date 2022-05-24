@@ -27,8 +27,8 @@ public class mainDAO {
 		return sqlSession.update(namespace+".updatePW", updateinfo);
 	}
 
-	public int totalcounts(Map<String, Object> param) {
-		return sqlSession.selectOne(namespace+".totalcounts", param);
+	public int stampCounts(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".stampCounts", param);
 	}
 	
 
@@ -65,6 +65,11 @@ public class mainDAO {
 	public List noticeList(Map<String, Object> map) {
 		return sqlSession.selectList(namespace+".noticeList", map);
 	}
+	
+	public int noticeCounts(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".noticeCounts", param);
+	}
+	
 	
 
 	

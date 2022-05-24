@@ -71,8 +71,14 @@ public class mainServiceImpl implements mainService {
 
 	@Override
 	public int totalcounts(Map<String, Object> param) {
-
-		return maindao.totalcounts(param);	
+		
+		if(param.get("what").equals("stamp")) {
+			return maindao.stampCounts(param);	
+		}else if(param.get("what").equals("notice")){
+			return maindao.noticeCounts(param);
+		}
+		return 0;
+		
 	}
 
 
