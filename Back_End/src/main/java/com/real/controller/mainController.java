@@ -43,6 +43,13 @@ public class mainController {
 
     
     
+    /**
+     * 로그아웃
+     * 
+     * @param request
+     * @param response
+     * @throws Exception
+     */
     @ResponseBody
   	@RequestMapping(value="/logout", method=RequestMethod.POST )
   	public void logout(HttpServletRequest request , HttpServletResponse response) 
@@ -65,6 +72,14 @@ public class mainController {
       }
     
     
+    /**
+     * 토큰 재설정
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
     @ResponseBody
 	@RequestMapping(value="/refreshToken", method=RequestMethod.POST )
 	public String refreshToken(HttpServletRequest request , HttpServletResponse response) 
@@ -152,7 +167,15 @@ public class mainController {
 	}
 	
 	
-	//회원의 총 리스트 개수 가져오기 
+	/**
+	 * 스탬프 리스트 개수 가져오기
+	 * 
+	 * @param listinfo
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value="/board/counts", method=RequestMethod.POST)
 	public int 총리스트개수 (@RequestBody Map<String,Object> listinfo, HttpServletRequest request , HttpServletResponse response) throws Exception {
@@ -183,12 +206,54 @@ public class mainController {
 		
 	}
 	
-
-	//페이징 리스트 가져오기 
+//
+//	//페이징 리스트 가져오기 
+//	@ResponseBody
+//	@RequestMapping(value="/board", method=RequestMethod.POST)
+//	public  List 리스트가져오기 (@RequestBody Map<String,Object> listinfo) {
+//		return mainservice.cw_list(listinfo);
+//		
+//	}
+	
+	/**
+	 * 스탬프 리스트 가져오기
+	 * pagination
+	 * 
+	 * @param data
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
-	@RequestMapping(value="/board", method=RequestMethod.POST)
-	public  List 리스트가져오기 (@RequestBody Map<String,Object> listinfo) {
-		return mainservice.cw_list(listinfo);
+	@RequestMapping(value="/stamp/board", method=RequestMethod.POST)
+	public Map<String, Object> getStampList (@RequestBody Map<String, Object> data, HttpServletRequest request , HttpServletResponse response) throws Exception {
+		String refreshToken = "";
+		Map<String, Object> stampMap = new HashMap<String, Object>();
+		
+		
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		String status = (String) checkToken.get("result");
+		
+		if(status.equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			
+			data.put("BIZNO", bizno);
+			System.out.println("DATA :::: " +data);
+			stampMap.put("stampList", mainservice.stampList(data));
+			
+			System.out.println("STAMP LIST :::::" +  mainservice.stampList(data));
+
+
+			stampMap.put("result", 1);
+		//토큰 만료된경우
+		}else{
+			stampMap.put("result", 0);
+		}
+		
+		return stampMap;
 		
 	}
 	
@@ -268,6 +333,14 @@ public class mainController {
 	}
 	
 	
+	/**
+	 * 스탬프 세팅값 가져오기
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value="/getStampSetting", method=RequestMethod.POST)
 	public Map<String, Object> getStampSetting( HttpServletRequest request , HttpServletResponse response) throws Exception {
@@ -280,11 +353,9 @@ public class mainController {
 		if(checkToken.get("result").equals("TOKEN VALID")) {
 			refreshToken = (String)checkToken.get("refreshToken");
 			int idx = jwtTokenProvider.getMemberIDX(refreshToken);
-			System.out.println("?!?" + mainservice.getStampSetting(idx));
 
 			try {
 				result.put("setting", mainservice.getStampSetting(idx));
-				System.out.println(result);
 				
 			} catch (Exception e) {
 				result.put("result", "GET ERROR");
@@ -300,7 +371,7 @@ public class mainController {
 			response.addCookie(removeCookie);
 			
 			if(checkToken.get("result").equals("TOKEN EXPIRED")){
-				result.put("result", "SUCCESS");
+				result.put("result", "TOKEN EXPIRED");
 			}else {
 				result.put("result", "TOKEN NULL");
 			}
@@ -311,6 +382,15 @@ public class mainController {
 	}
 	
 	
+	/**
+	 * 비밀번호 변경 로직
+	 * 
+	 * @param updateinfo
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value="/passwordEdit", method=RequestMethod.POST)
 	public int passwordEdit (@RequestBody Map<String, Object> updateinfo , HttpServletRequest request , HttpServletResponse response) throws Exception {		
@@ -348,5 +428,122 @@ public class mainController {
     
 		
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/stamp/detail", method=RequestMethod.POST)
+	public Map<String, Object> stampDetail(@RequestBody Map<String, Object> map, HttpServletRequest request , HttpServletResponse response) throws Exception {	
+		System.out.println("스탬프 상세정보 가져오기");
+		
+		Map<String, Object> result = new HashMap<String, Object>(); 
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		
+		String refreshToken = "";
+		
+		if(checkToken.get("result").equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			Map<String, Object> stampDetail = new HashMap<String , Object>();
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setMaxAge(30 * 60);
+			response.addCookie(refreshCookie);
+			map.put("BIZNO", bizno);
+			System.out.println(map);
+				stampDetail = mainservice.getStampDetail(map);
+				if(stampDetail != null) {
+					result.put("stampDetail", stampDetail);
+					result.put("result", "SUCCESS");
+
+				}else {
+					result.put("result", "NO DATA");
+				}
+				
+			
+		
+		}else {
+			Cookie removeCookie = new Cookie("refresh_token", null);
+			removeCookie.setMaxAge(0);
+			response.addCookie(removeCookie);
+			
+			if(checkToken.get("result").equals("TOKEN EXPIRED")){
+				result.put("result", "TOKEN EXPIRED");
+			}else {
+				result.put("result", "TOKEN NULL");
+			}
+		}
+		
+		
+		return result; 
+	} 
+	
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/stamp/update", method=RequestMethod.POST)
+	public Map<String, Object> stampUpdate(@RequestBody Map<String, Object> map, HttpServletRequest request , HttpServletResponse response) throws Exception {		
+		Map<String, Object> result = new HashMap<String, Object>(); 
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		
+		String refreshToken = "";
+		
+		if(checkToken.get("result").equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			int update;
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setMaxAge(30 * 60);
+			response.addCookie(refreshCookie);
+			
+			map.put("BIZNO", bizno);
+			System.out.println(map);
+				update = mainservice.updateStamp(map);
+				if(update > 0) {
+					result.put("result", "SUCCESS");
+				}else {
+					result.put("result", "NO DATA");
+				}
+				
+			
+		
+		}else {
+			Cookie removeCookie = new Cookie("refresh_token", null);
+			removeCookie.setMaxAge(0);
+			response.addCookie(removeCookie);
+			
+			if(checkToken.get("result").equals("TOKEN EXPIRED")){
+				result.put("result", "TOKEN EXPIRED");
+			}else {
+				result.put("result", "TOKEN NULL");
+			}
+		}
+		
+		
+		
+		return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/notice/board", method=RequestMethod.POST)
+	public Map<String, Object> getNoticeList (@RequestBody Map<String, Object> map){
+		Map<String, Object> noticeMap = new HashMap<String, Object>();
+		
+		List<Object> noticeList = mainservice.noticeList(map);
+		
+		if(noticeList.size() > 0) {
+			noticeMap.put("result", "SUCCESS");
+			noticeMap.put("noticeList", noticeList);
+		}else {
+			noticeMap.put("result", "NO DATA");
+		}
+
+	
+		
+		return noticeMap;
+		
+	}
+	
 
 }

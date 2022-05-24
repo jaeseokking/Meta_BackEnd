@@ -33,8 +33,7 @@ public class mainDAO {
 	
 
 	public List cw_list(Map<String, Object> map) {
-		System.out.println(map);
-		System.out.println(sqlSession.selectList(namespace+".CWlist",map));
+
 		return  sqlSession.selectList(namespace+".CWlist",map);
 
 	}
@@ -49,6 +48,22 @@ public class mainDAO {
 
 	public Map<String, Object> getStampSetting(int idx) {
 		return sqlSession.selectOne(namespace+".getStampSetting", idx);
+	}
+
+	public List stampList(Map<String, Object> data) {
+		return sqlSession.selectList(namespace+".stampList", data);
+	}
+
+	public Map<String, Object> getStampDetail(Map<String, Object> map) {
+		return sqlSession.selectOne(namespace+".getStampDetail", map);
+	}
+
+	public int updateStamp(Map<String, Object> map) {
+		return sqlSession.update(namespace+".updateStamp", map);
+	}
+
+	public List noticeList(Map<String, Object> map) {
+		return sqlSession.selectList(namespace+".noticeList", map);
 	}
 	
 

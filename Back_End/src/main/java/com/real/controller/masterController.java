@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -290,6 +289,7 @@ public class masterController {
 	public Map<String,Object> EnquiryF(@RequestBody Map<String,Object> param) {
 		return masterservice.EnquiryF(param);
 	}
+
 	
 	@ResponseBody
 	@RequestMapping(value="/LoginM",method = RequestMethod.POST)
