@@ -227,7 +227,7 @@ public class mainController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/stamp/board", method=RequestMethod.POST)
-	public Map<String, Object> stampList (@RequestBody Map<String, Object> data, HttpServletRequest request , HttpServletResponse response) throws Exception {
+	public Map<String, Object> getStampList (@RequestBody Map<String, Object> data, HttpServletRequest request , HttpServletResponse response) throws Exception {
 		String refreshToken = "";
 		Map<String, Object> stampMap = new HashMap<String, Object>();
 		
@@ -480,10 +480,70 @@ public class mainController {
 	
 	
 	@ResponseBody
-	@RequestMapping(value="/stamp/detail", method=RequestMethod.POST)
-	public Map<String, Object> stampUpdate(@RequestBody Map<String, Object> map, HttpServletRequest request , HttpServletResponse response) throws Exception {
+	@RequestMapping(value="/stamp/update", method=RequestMethod.POST)
+	public Map<String, Object> stampUpdate(@RequestBody Map<String, Object> map, HttpServletRequest request , HttpServletResponse response) throws Exception {		
+		Map<String, Object> result = new HashMap<String, Object>(); 
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
 		
-		return null;
+		String refreshToken = "";
+		
+		if(checkToken.get("result").equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			int update;
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setMaxAge(30 * 60);
+			response.addCookie(refreshCookie);
+			
+			map.put("BIZNO", bizno);
+			System.out.println(map);
+				update = mainservice.updateStamp(map);
+				if(update > 0) {
+					result.put("result", "SUCCESS");
+				}else {
+					result.put("result", "NO DATA");
+				}
+				
+			
+		
+		}else {
+			Cookie removeCookie = new Cookie("refresh_token", null);
+			removeCookie.setMaxAge(0);
+			response.addCookie(removeCookie);
+			
+			if(checkToken.get("result").equals("TOKEN EXPIRED")){
+				result.put("result", "TOKEN EXPIRED");
+			}else {
+				result.put("result", "TOKEN NULL");
+			}
+		}
+		
+		
+		
+		return result;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/notice/board", method=RequestMethod.POST)
+	public Map<String, Object> getNoticeList (@RequestBody Map<String, Object> map){
+		Map<String, Object> noticeMap = new HashMap<String, Object>();
+		
+		List<Object> noticeList = mainservice.noticeList(map);
+		
+		if(noticeList.size() > 0) {
+			noticeMap.put("result", "SUCCESS");
+			noticeMap.put("noticeList", noticeList);
+		}else {
+			noticeMap.put("result", "NO DATA");
+		}
+
+	
+		
+		return noticeMap;
+		
+	}
+	
 
 }

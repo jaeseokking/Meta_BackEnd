@@ -57,6 +57,14 @@ public class mainDAO {
 	public Map<String, Object> getStampDetail(Map<String, Object> map) {
 		return sqlSession.selectOne(namespace+".getStampDetail", map);
 	}
+
+	public int updateStamp(Map<String, Object> map) {
+		return sqlSession.update(namespace+".updateStamp", map);
+	}
+
+	public List noticeList(Map<String, Object> map) {
+		return sqlSession.selectList(namespace+".noticeList", map);
+	}
 	
 
 	

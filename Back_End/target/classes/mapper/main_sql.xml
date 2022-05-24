@@ -13,12 +13,12 @@
 	<!-- 회원 총 리스트 개수  -->
 	<select id="totalcounts" parameterType="map" resultType="int">
 		select count(*) from TB_RECEIPT_STAMP where SHOP_INFO_NO = (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO}) 
-		<!-- <if test="startDate != 0 and endDate != 0">
-			and FRT_CREA_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
+		<if test="startDate != 0 and endDate != 0">
+			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
 		</if>
 		<if test="!'all'.equals(selectUse) and selectUse != null">
 			and CARWASHYN = #{selectUse}
-		</if> -->
+		</if>
 	</select> 
 	
 
@@ -62,9 +62,9 @@
 	<select id="stampList" parameterType="map" resultType="map">
 		SELECT SEQ, STAMP_CODE, STAMP_COMP_DTM, STAMP_END_DTM, STAMP_CNT, STAMP_USE_YN FROM TB_RECEIPT_STAMP 
 		WHERE  SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO}) 
-		<!-- <if test="startDate != 0 and endDate != 0">
-			and FRT_CREA_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
-		</if > -->
+		<if test="startDate != 0 and endDate != 0">
+			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
+		</if >
 		<if test="!'all'.equals(selectUse) and selectUse != null">
 			and STAMP_USE_YN = #{selectUse}
 		</if>
@@ -76,5 +76,32 @@
 		SELECT * FROM TB_RECEIPT_STAMP 
 		WHERE SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO}) AND SEQ = #{SEQ} AND STAMP_CODE = #{STAMP_CODE}
 	</select>
+	
+	<!-- 스탬프 수정 -->
+	<update id="updateStamp" parameterType="map">
+		UPDATE TB_RECEIPT_STAMP SET STAMP_USE_YN = #{STAMP_USE_YN}
+		WHERE SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO}) AND SEQ = #{SEQ} AND STAMP_CODE = #{STAMP_CODE}
+	</update>
+	
+	
+	<!-- 공지사항 리스트 가져오기  -->
+	<select id="noticeList" parameterType="map" resultType="map">
+		SELECT * FROM TB_NOTICE 
+		WHERE PERMISSION = 1
+		order by DATE desc LIMIT #{firstpage} , 10  
+	</select> 
+	
+	
+	<!-- 공지사항 리스트 개수  -->
+	<select id="noticecounts" parameterType="map" resultType="int">
+		select count(*) from TB_RECEIPT_STAMP where PERMISSION = 1
+		<!-- <if test="startDate != 0 and endDate != 0">
+			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
+		</if>
+		<if test="!'all'.equals(selectUse) and selectUse != null">
+			and CARWASHYN = #{selectUse}
+		</if> -->
+	</select> 
+	
 
 </mapper>
