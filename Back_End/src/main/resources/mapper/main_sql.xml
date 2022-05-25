@@ -86,7 +86,7 @@
 	
 	<!-- 공지사항 리스트 가져오기  -->
 	<select id="noticeList" parameterType="map" resultType="map">
-		SELECT * FROM TB_NOTICE 
+		SELECT IDX, TITLE, DATE FROM TB_NOTICE 
 		WHERE PERMISSION = 1
 		order by DATE desc LIMIT #{firstpage} , 10  
 	</select> 
@@ -94,7 +94,7 @@
 	
 	<!-- 공지사항 리스트 개수  -->
 	<select id="noticeCounts" parameterType="map" resultType="int">
-		select count(*) from TB_RECEIPT_STAMP where PERMISSION = 1
+		select count(*) from TB_NOTICE WHERE PERMISSION = 1
 		<!-- <if test="startDate != 0 and endDate != 0">
 			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
 		</if>
@@ -102,6 +102,46 @@
 			and CARWASHYN = #{selectUse}
 		</if> -->
 	</select> 
+	
+	<!--공지사항 상세정보 보기 -->
+	<select id="noticeDetail" parameterType="map" resultType="map">
+		SELECT IDX, TITLE, CONTENT, DATE FROM TB_NOTICE
+		WHERE PERMISSION = 1 AND IDX = #{IDX}
+	</select>
+	
+	<!-- 문의글 리스트 가져오기 -->
+	<select  id="enquiryList" parameterType="map" resultType="map">
+		SELECT IDX, TITLE, DATE FROM TB_ENQUIRY 
+		WHERE WHO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO})
+		order by DATE desc LIMIT #{firstpage} , 10  
+	</select>
+	
+	
+	<!-- 문의글 리스트 개수  -->
+	<select id="enquiryCounts" parameterType="map" resultType="int">
+		select count(*) from TB_ENQUIRY WHERE WHO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO})
+		<!-- <if test="startDate != 0 and endDate != 0">
+			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
+		</if>
+		<if test="!'all'.equals(selectUse) and selectUse != null">
+			and CARWASHYN = #{selectUse}
+		</if> -->
+	</select> 
+	
+	<!--문의글 상세정보 보기 -->
+	<select id="enquiryDetail" parameterType="map" resultType="map">
+		SELECT IDX, TITLE, CONTENT, DATE FROM TB_ENQUIRY
+		WHERE IDX = #{IDX} AND WHO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO})
+		
+	</select>
+	
+	<!-- 문의글 답변 가져오기 -->
+	<select id="enquiryReply" parameterType="map" resultType="map">
+		SELECT CONTENT FROM TB_ENQUIRY_REPLY
+		WHERE ENQUIRY_NUM = #{IDX} 
+	</select>
+	
+	
 	
 
 </mapper>
