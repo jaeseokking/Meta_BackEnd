@@ -39,5 +39,7 @@ public interface mainService {
 
 	public Map<String, Object> getEnquiryReply(Map<String, Object> map);
 
+	public int enquiryWirte(Map<String, Object> data);
+
 
 }

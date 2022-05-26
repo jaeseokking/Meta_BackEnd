@@ -653,6 +653,37 @@ public class mainController {
 	} 
 	
 	
+	@ResponseBody
+	@RequestMapping(value="/enquiryWrite", method=RequestMethod.POST)
+	public Map<String, Object> enquiryWrite (@RequestBody Map<String, Object> data, HttpServletRequest request , HttpServletResponse response) throws Exception {
+		String refreshToken = "";
+		Map<String, Object> enquiryMap = new HashMap<String, Object>();
+		
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		String status = (String) checkToken.get("result");
+		
+		if(status.equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+
+			data.put("BIZNO", bizno);
+			int insertResult =  mainservice.enquiryWirte(data);
+			
+			if(insertResult > 0) {
+				enquiryMap.put("result", "SUCCESS");
+			}else {
+				enquiryMap.put("result", "INSERT ERROR");
+			}
+		//토큰 만료된경우
+		}else{
+			enquiryMap.put("result", status);
+		}
+		
+		return enquiryMap;
+		
+	}
+	
 	
 
 }

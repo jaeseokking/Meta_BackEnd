@@ -141,6 +141,12 @@
 		WHERE ENQUIRY_NUM = #{IDX} 
 	</select>
 	
+	<!-- 문의글 작성 -->
+	<insert id="enquiryWrite" parameterType="map">
+		INSERT INTO TB_ENQUIRY (TITLE, KIND, CONTENT, WHO, DATE)
+		VALUES(#{TITLE}, #{CATEGORY}, #{CONTENT}, (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO}), NOW())
+	</insert>
+	
 	
 	
 

@@ -89,6 +89,10 @@ public class mainDAO {
 	public Map<String, Object> enquiryReply(Map<String, Object> map) {
 		return sqlSession.selectOne(namespace+".enquiryReply", map);
 	}
+
+	public int enquiryWrite(Map<String, Object> data) {
+		return sqlSession.insert(namespace+".enquiryWrite", data);
+	}
 	
 	
 

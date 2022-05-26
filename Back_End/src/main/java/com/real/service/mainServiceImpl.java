@@ -192,6 +192,13 @@ public class mainServiceImpl implements mainService {
 		return maindao.enquiryReply(map);
 	}
 
+
+
+	@Override
+	public int enquiryWirte(Map<String, Object> data) {
+		return maindao.enquiryWrite(data);
+	}
+
 	
 	
 	
