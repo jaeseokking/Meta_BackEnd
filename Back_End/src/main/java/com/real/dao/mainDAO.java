@@ -27,8 +27,8 @@ public class mainDAO {
 		return sqlSession.update(namespace+".updatePW", updateinfo);
 	}
 
-	public int totalcounts(Map<String, Object> param) {
-		return sqlSession.selectOne(namespace+".totalcounts", param);
+	public int stampCounts(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".stampCounts", param);
 	}
 	
 
@@ -65,6 +65,35 @@ public class mainDAO {
 	public List noticeList(Map<String, Object> map) {
 		return sqlSession.selectList(namespace+".noticeList", map);
 	}
+	
+	public int noticeCounts(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".noticeCounts", param);
+	}
+
+	public Map<String, Object> noticeDetail(Map<String, Object> map) {
+		return sqlSession.selectOne(namespace+".noticeDetail", map);
+	}
+
+	public List<Object> enquiryList(Map<String, Object> data) {
+		return sqlSession.selectList(namespace+".enquiryList", data);
+	}
+
+	public int enquiryCounts(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".enquiryCounts", param);
+	}
+
+	public Map<String, Object> enquiryDetail(Map<String, Object> map) {
+		return sqlSession.selectOne(namespace+".enquiryDetail", map);
+	}
+
+	public Map<String, Object> enquiryReply(Map<String, Object> map) {
+		return sqlSession.selectOne(namespace+".enquiryReply", map);
+	}
+
+	public int enquiryWrite(Map<String, Object> data) {
+		return sqlSession.insert(namespace+".enquiryWrite", data);
+	}
+	
 	
 
 	

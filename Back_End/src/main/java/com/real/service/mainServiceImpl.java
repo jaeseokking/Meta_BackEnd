@@ -71,8 +71,16 @@ public class mainServiceImpl implements mainService {
 
 	@Override
 	public int totalcounts(Map<String, Object> param) {
-
-		return maindao.totalcounts(param);	
+		
+		if(param.get("what").equals("stamp")) {
+			return maindao.stampCounts(param);	
+		}else if(param.get("what").equals("notice")){
+			return maindao.noticeCounts(param);
+		}else if(param.get("what").equals("enquiry")) {
+			return maindao.enquiryCounts(param);
+		}
+		return 0;
+		
 	}
 
 
@@ -144,6 +152,51 @@ public class mainServiceImpl implements mainService {
 
 		}
 		
+	}
+
+
+
+	@Override
+	public Map<String, Object> noticeDetail(Map<String, Object> map) {
+		return maindao.noticeDetail(map);
+	}
+
+
+
+	@Override
+	public List<Object> enquiryList(Map<String, Object> data) {
+		
+		int page = (Integer) data.get("page");
+		
+		if(page < 1) {
+			return null;
+		}else {
+			int firstpage = (page - 1) * 10;
+			data.put("firstpage", firstpage);
+			return maindao.enquiryList(data);
+		}
+		
+	}
+
+
+
+	@Override
+	public Map<String, Object> getEnquiryDetail(Map<String, Object> map) {
+		return maindao.enquiryDetail(map);
+	}
+
+
+
+	@Override
+	public Map<String, Object> getEnquiryReply(Map<String, Object> map) {
+		return maindao.enquiryReply(map);
+	}
+
+
+
+	@Override
+	public int enquiryWirte(Map<String, Object> data) {
+		return maindao.enquiryWrite(data);
 	}
 
 	

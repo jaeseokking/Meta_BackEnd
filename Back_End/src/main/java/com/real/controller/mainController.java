@@ -545,5 +545,145 @@ public class mainController {
 		
 	}
 	
+	
+
+	@ResponseBody
+	@RequestMapping(value="/notice/detail", method=RequestMethod.POST)
+	public Map<String, Object> getNoticeDetail (@RequestBody Map<String, Object> map){
+		Map<String, Object> noticeMap = new HashMap<String, Object>();
+ 
+		
+		Map<String, Object> noticeDetail = mainservice.noticeDetail(map);
+		
+		if(noticeDetail.size() > 0) {
+			noticeMap.put("result", "SUCCESS");
+			noticeMap.put("noticeDetail", noticeDetail);
+		}else {
+			noticeMap.put("result", "NO DATA");
+		}
+		
+		return noticeMap;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/enquiry/board", method=RequestMethod.POST)
+	public Map<String, Object> getEnquiryList (@RequestBody Map<String, Object> data, HttpServletRequest request , HttpServletResponse response) throws Exception {
+		String refreshToken = "";
+		Map<String, Object> enquiryMap = new HashMap<String, Object>();
+		
+		
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		String status = (String) checkToken.get("result");
+		
+		if(status.equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			
+			data.put("BIZNO", bizno);
+			enquiryMap.put("enquiryList", mainservice.enquiryList(data));
+			
+
+			enquiryMap.put("result", 1);
+		//토큰 만료된경우
+		}else{
+			enquiryMap.put("result", 0);
+		}
+		
+		return enquiryMap;
+		
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/enquiry/detail", method=RequestMethod.POST)
+	public Map<String, Object> enquiryDetail(@RequestBody Map<String, Object> map, HttpServletRequest request , HttpServletResponse response) throws Exception {	
+		System.out.println("스탬프 상세정보 가져오기");
+		
+		Map<String, Object> result = new HashMap<String, Object>(); 
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		
+		String refreshToken = "";
+		
+		if(checkToken.get("result").equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			Map<String, Object> enquiryDetail = new HashMap<String , Object>();
+			Map<String, Object> enquiryReply = new HashMap<String , Object>();
+
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setMaxAge(30 * 60);
+			response.addCookie(refreshCookie);
+			map.put("BIZNO", bizno);
+			
+				enquiryDetail = mainservice.getEnquiryDetail(map);
+				if(enquiryDetail != null) {
+					result.put("enquiryDetail", enquiryDetail);
+					enquiryReply = mainservice.getEnquiryReply(map);
+
+					if(enquiryDetail != null) {
+						result.put("enquiryReply", enquiryReply);
+					}
+					
+					result.put("result", "SUCCESS");
+
+				}else {
+					result.put("result", "NO DATA");
+				}
+				
+			
+		
+		}else {
+			Cookie removeCookie = new Cookie("refresh_token", null);
+			removeCookie.setMaxAge(0);
+			response.addCookie(removeCookie);
+			
+			if(checkToken.get("result").equals("TOKEN EXPIRED")){
+				result.put("result", "TOKEN EXPIRED");
+			}else {
+				result.put("result", "TOKEN NULL");
+			}
+		}
+		
+		
+		return result; 
+	} 
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/enquiryWrite", method=RequestMethod.POST)
+	public Map<String, Object> enquiryWrite (@RequestBody Map<String, Object> data, HttpServletRequest request , HttpServletResponse response) throws Exception {
+		String refreshToken = "";
+		Map<String, Object> enquiryMap = new HashMap<String, Object>();
+		
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		String status = (String) checkToken.get("result");
+		
+		if(status.equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+
+			data.put("BIZNO", bizno);
+			int insertResult =  mainservice.enquiryWirte(data);
+			
+			if(insertResult > 0) {
+				enquiryMap.put("result", "SUCCESS");
+			}else {
+				enquiryMap.put("result", "INSERT ERROR");
+			}
+		//토큰 만료된경우
+		}else{
+			enquiryMap.put("result", status);
+		}
+		
+		return enquiryMap;
+		
+	}
+	
+	
 
 }
