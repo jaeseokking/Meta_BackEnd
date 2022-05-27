@@ -93,6 +93,10 @@ public class mainDAO {
 	public int enquiryWrite(Map<String, Object> data) {
 		return sqlSession.insert(namespace+".enquiryWrite", data);
 	}
+
+	public int enquiryUpdate(Map<String, Object> data) {
+		return sqlSession.update(namespace+".enquiryUpdate", data);
+	}
 	
 	
 

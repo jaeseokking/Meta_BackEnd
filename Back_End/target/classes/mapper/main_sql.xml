@@ -130,7 +130,7 @@
 	
 	<!--문의글 상세정보 보기 -->
 	<select id="enquiryDetail" parameterType="map" resultType="map">
-		SELECT IDX, TITLE, CONTENT, DATE FROM TB_ENQUIRY
+		SELECT IDX, TITLE, CONTENT, DATE, KIND ,UPDATED_DATE FROM TB_ENQUIRY 
 		WHERE IDX = #{IDX} AND WHO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO})
 		
 	</select>
@@ -147,7 +147,11 @@
 		VALUES(#{TITLE}, #{CATEGORY}, #{CONTENT}, (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO}), NOW())
 	</insert>
 	
-	
+	<!-- 문의글 수정 -->
+	<update id="enquiryUpdate" parameterType="map">
+		UPDATE TB_ENQUIRY SET TITLE = #{TITLE} , KIND = #{CATEGORY}, CONTENT=#{CONTENT}, UPDATED_DATE = NOW()
+		WHERE IDX = #{IDX} AND WHO = (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO})
+	</update>
 	
 
 </mapper>
