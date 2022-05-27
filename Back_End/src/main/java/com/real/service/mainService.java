@@ -41,5 +41,7 @@ public interface mainService {
 
 	public int enquiryWirte(Map<String, Object> data);
 
+	public int enquiryUpdate(Map<String, Object> data);
+
 
 }
