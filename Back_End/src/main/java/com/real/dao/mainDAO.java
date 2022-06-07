@@ -27,14 +27,13 @@ public class mainDAO {
 		return sqlSession.update(namespace+".updatePW", updateinfo);
 	}
 
-	public int totalcounts(Map<String, Object> param) {
-		return sqlSession.selectOne(namespace+".totalcounts", param);
+	public int stampCounts(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".stampCounts", param);
 	}
 	
 
 	public List cw_list(Map<String, Object> map) {
-		System.out.println(map);
-		System.out.println(sqlSession.selectList(namespace+".CWlist",map));
+
 		return  sqlSession.selectList(namespace+".CWlist",map);
 
 	}
@@ -50,6 +49,55 @@ public class mainDAO {
 	public Map<String, Object> getStampSetting(int idx) {
 		return sqlSession.selectOne(namespace+".getStampSetting", idx);
 	}
+
+	public List stampList(Map<String, Object> data) {
+		return sqlSession.selectList(namespace+".stampList", data);
+	}
+
+	public Map<String, Object> getStampDetail(Map<String, Object> map) {
+		return sqlSession.selectOne(namespace+".getStampDetail", map);
+	}
+
+	public int updateStamp(Map<String, Object> map) {
+		return sqlSession.update(namespace+".updateStamp", map);
+	}
+
+	public List noticeList(Map<String, Object> map) {
+		return sqlSession.selectList(namespace+".noticeList", map);
+	}
+	
+	public int noticeCounts(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".noticeCounts", param);
+	}
+
+	public Map<String, Object> noticeDetail(Map<String, Object> map) {
+		return sqlSession.selectOne(namespace+".noticeDetail", map);
+	}
+
+	public List<Object> enquiryList(Map<String, Object> data) {
+		return sqlSession.selectList(namespace+".enquiryList", data);
+	}
+
+	public int enquiryCounts(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".enquiryCounts", param);
+	}
+
+	public Map<String, Object> enquiryDetail(Map<String, Object> map) {
+		return sqlSession.selectOne(namespace+".enquiryDetail", map);
+	}
+
+	public Map<String, Object> enquiryReply(Map<String, Object> map) {
+		return sqlSession.selectOne(namespace+".enquiryReply", map);
+	}
+
+	public int enquiryWrite(Map<String, Object> data) {
+		return sqlSession.insert(namespace+".enquiryWrite", data);
+	}
+
+	public int enquiryUpdate(Map<String, Object> data) {
+		return sqlSession.update(namespace+".enquiryUpdate", data);
+	}
+	
 	
 
 	
