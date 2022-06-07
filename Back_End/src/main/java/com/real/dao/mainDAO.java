@@ -46,8 +46,8 @@ public class mainDAO {
 		sqlSession.selectList(namespace+".stampSetting", stampinfo);
 	}
 
-	public Map<String, Object> getStampSetting(int idx) {
-		return sqlSession.selectOne(namespace+".getStampSetting", idx);
+	public Map<String, Object> getStampSetting(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".getStampSetting", param);
 	}
 
 	public List stampList(Map<String, Object> data) {
@@ -96,6 +96,10 @@ public class mainDAO {
 
 	public int enquiryUpdate(Map<String, Object> data) {
 		return sqlSession.update(namespace+".enquiryUpdate", data);
+	}
+
+	public List<String> getShopList(String bizno) {
+		return sqlSession.selectList(namespace+".getShopList",bizno);
 	}
 	
 	

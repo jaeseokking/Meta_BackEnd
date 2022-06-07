@@ -100,9 +100,9 @@ public class mainServiceImpl implements mainService {
 
 
 
-	@Override
-	public Map<String, Object> getStampSetting(int idx) {
-		return maindao.getStampSetting(idx);
+	@Override 
+	public Map<String, Object> getStampSetting(Map<String, Object> param) {
+		return maindao.getStampSetting(param);
 	}
 
 
@@ -204,6 +204,13 @@ public class mainServiceImpl implements mainService {
 	@Override
 	public int enquiryUpdate(Map<String, Object> data) {
 		return maindao.enquiryUpdate(data);
+	}
+
+
+
+	@Override
+	public List<String> getShopList(String bizno) {
+		return maindao.getShopList(bizno);
 	}
 
 	
