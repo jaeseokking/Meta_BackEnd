@@ -324,6 +324,13 @@ public class masterServiceImpl implements masterService {
 		return masterdao.LoginM(param);
 		
 	}
+
+
+	@Override
+	public Map<String, Object> DuplicationBiznoCheck(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return masterdao.DuplicationBiznoCheck(param);
+	}
 	
 
 }

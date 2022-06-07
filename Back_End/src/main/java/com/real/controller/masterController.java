@@ -299,6 +299,7 @@ public class masterController {
 		Map<String,Object> result = masterservice.LoginM(param);
 		String accessToken = "";
 		String refreshToken = "";
+		System.out.println(result);
 		
 		if((Long)result.get("count") == 1) {
 			HttpSession se = request.getSession();
@@ -323,5 +324,49 @@ public class masterController {
 		return map;
 		
 	}
+	
+	
+    @ResponseBody
+  	@RequestMapping(value="/LogoutM", method=RequestMethod.POST )
+  	public void logout(HttpServletRequest request , HttpServletResponse response) 
+  			throws Exception{
+      	
+      	String refreshToken = "";
+      	
+		HttpSession se = request.getSession();
+		se.setAttribute("Okadmin", 0);
+      	
+      	Cookie [] cookies = request.getCookies();
+      
+      	if(cookies != null && cookies.length > 0) {
+      		for(Cookie cookie : cookies) {
+      			System.out.println(cookie.getValue());
+      			System.out.println(cookie.getName());
+      			if(cookie.getName().equals("refresh_token")) {
+      					Cookie removeCookie = new Cookie("refresh_token", null);
+      					removeCookie.setMaxAge(0);
+      					response.addCookie(removeCookie);
+      				
+      			}
+      		}
+      	}
+   	
+      }
+	
+    
+    @ResponseBody
+    @RequestMapping(value="DuplicationBiznoCheck",method=RequestMethod.POST)
+    public Map<String,Object> DuplicationBiznoCheck(@RequestBody Map<String,Object> param){
+    	Map<String,Object> map = new HashMap<String,Object>();
+    	System.out.println("param ::"+param);
+    	map = masterservice.DuplicationBiznoCheck(param);
+    	System.out.println("map ::"+ map);
+    	
+    	return map;
+    	
+    	
+    }
+	
+	
 
 }
