@@ -83,7 +83,7 @@
 <!-- 공지사항 업데이트 하기 -->
 <update id="NoticeU" parameterType="com.real.dto.NoticeVo">
 	update TB_NOTICE
-	 	set TITLE = #{title},content = #{content}
+	 	set TITLE = #{title},content = #{content},permission=#{permission}
 	 		where IDX = #{idx}
 </update>
 
@@ -131,9 +131,9 @@
 
 <!-- 선택한 문의사항 가져오기 -->
 <select id="EnquiryO" parameterType="map" resultType="map">
-	select IDX,TITLE,CONTENT,KIND,WHO
-		from TB_ENQUIRY
-			where IDX = #{idx}
+	select e.IDX,e.TITLE,e.CONTENT,e.KIND,e.WHO,r.CONTENT RCONTENT
+		from TB_ENQUIRY e left join TB_ENQUIRY_REPLY r on r.ENQUIRY_NUM = e.IDX
+			where e.IDX = #{idx} 
 </select>
 
 <!-- 문의사항에 답글 남기기 -->
@@ -152,6 +152,12 @@
 	select count(*) count , IDX, ID
 		from TB_MASTER
 			where ID= #{id} and PASSWORD = #{pass}
+</select>
+
+<select id="DuplicationBiznoCheck" parameterType="map" resultType="map">
+	select count(*) count
+	 from TB_MEMBER
+	  where BIZNO = #{bizno}
 </select>
 
 </mapper>

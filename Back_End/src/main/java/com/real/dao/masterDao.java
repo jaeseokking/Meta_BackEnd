@@ -222,5 +222,11 @@ public class masterDao {
 	}
 
 
+	public Map<String, Object> DuplicationBiznoCheck(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace+".DuplicationBiznoCheck",param);
+	}
+
+
 
 }
