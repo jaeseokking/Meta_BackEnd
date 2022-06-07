@@ -91,6 +91,8 @@ public class mainController {
     	Cookie [] cookies = request.getCookies();
     	if(cookies != null && cookies.length > 0) {
     		for(Cookie cookie : cookies) {
+    			System.out.println("cookie name : " + cookie.getName());
+    			System.out.println("비교 :: "+cookie.getName().equals("refresh_token"));
     			if(cookie.getName().equals("refresh_token")) {
     				refreshToken = cookie.getValue();
     				if(jwtTokenProvider.checkClaim(refreshToken)) {

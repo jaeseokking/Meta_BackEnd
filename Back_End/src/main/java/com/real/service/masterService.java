@@ -43,6 +43,8 @@ public interface masterService {
 
 	Map<String, Object> LoginM(Map<String, Object> param);
 
+	Map<String, Object> DuplicationBiznoCheck(Map<String, Object> param);
+
 
 
 }
