@@ -21,7 +21,7 @@ public interface mainService {
 
 	public void stampSetting(Map<String, Object> stampinfo);
 
-	public Map<String, Object> getStampSetting(int idx);
+	public Map<String, Object> getStampSetting(Map<String, Object> param);
 
 	public List<Object> stampList(Map<String, Object> data);
 
@@ -42,6 +42,9 @@ public interface mainService {
 	public int enquiryWirte(Map<String, Object> data);
 
 	public int enquiryUpdate(Map<String, Object> data);
+
+	public List<String> getShopList(String bizno);
+
 
 
 }

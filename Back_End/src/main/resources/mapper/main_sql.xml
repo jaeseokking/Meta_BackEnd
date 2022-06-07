@@ -10,14 +10,14 @@
 		WHERE  BIZNO = #{BIZNO} and PASS = #{PASS}
 	</select>
 	
-	<!-- 회원 총 리스트 개수  -->
+	<!-- 스탬프 리스트 개수  -->
 	<select id="stampCounts" parameterType="map" resultType="int">
-		select count(*) from TB_RECEIPT_STAMP where SHOP_INFO_NO = (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO}) 
+		select count(*) from TB_RECEIPT_STAMP where SHOP_INFO_NO = (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO} AND SHOP_INFO_NO = #{shop_info_no}) 
 		<if test="startDate != 0 and endDate != 0">
 			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
 		</if>
 		<if test="!'all'.equals(selectUse) and selectUse != null">
-			and CARWASHYN = #{selectUse}
+			and STAMP_USE_YN = #{selectUse}
 		</if>
 	</select> 
 	
@@ -45,23 +45,23 @@
 	
 	<!-- 스탬프 세팅 -->
 	<insert id="stampSetting">
-		INSERT INTO TB_STAMP_CONDITION(MINIMUM_PRICE, MINIMUM_COUNT,STAMP_EXP, START_DATE, END_DATE, COMPLETION_STAMP, REWARD, MEMBER_IDX)
-		VALUES(#{minimum_price, jdbcType=INTEGER}, #{minimum_count, jdbcType=INTEGER},#{stamp_exp, jdbcType=INTEGER}, #{startDate}, #{endDate}, #{completion_stamp}, #{reward}, #{MEMBER_IDX})
+		INSERT INTO TB_STAMP_CONDITION(MINIMUM_PRICE, MINIMUM_COUNT,STAMP_EXP, START_DATE, END_DATE, COMPLETION_STAMP, REWARD, SHOP_INFO_NO)
+		VALUES(#{minimum_price, jdbcType=INTEGER}, #{minimum_count, jdbcType=INTEGER},#{stamp_exp, jdbcType=INTEGER}, #{startDate}, #{endDate}, #{completion_stamp}, #{reward}, (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{bizno} AND SHOP_INFO_NO = #{shop_info_no}))
 		ON DUPLICATE KEY UPDATE
 		MINIMUM_PRICE = #{minimum_price, jdbcType=INTEGER}, MINIMUM_COUNT = #{minimum_count, jdbcType=INTEGER}, STAMP_EXP = #{stamp_exp, jdbcType=INTEGER}, START_DATE = #{startDate}, END_DATE = #{endDate}, COMPLETION_STAMP = #{completion_stamp}, REWARD = #{reward}
 	</insert>
 	
 	<!-- 스탬프 값 가져오기 -->
-	<select id="getStampSetting" resultType="map" parameterType="int">
+	<select id="getStampSetting" resultType="map" parameterType="map">
 		SELECT * FROM TB_STAMP_CONDITION
-		WHERE MEMBER_IDX = #{idx}
+		WHERE SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO} AND SHOP_INFO_NO = #{SHOP_INFO_NO})
 	</select>
 	
 	
 	<!-- 스탬프 리스트 가져오기  -->
 	<select id="stampList" parameterType="map" resultType="map">
 		SELECT SEQ, STAMP_CODE, STAMP_COMP_DTM, STAMP_END_DTM, STAMP_CNT, STAMP_USE_YN FROM TB_RECEIPT_STAMP 
-		WHERE  SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO}) 
+		WHERE  SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO} AND SHOP_INFO_NO = #{shop_info_no}) 
 		<if test="startDate != 0 and endDate != 0">
 			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
 		</if >
@@ -94,7 +94,7 @@
 	
 	<!-- 공지사항 리스트 개수  -->
 	<select id="noticeCounts" parameterType="map" resultType="int">
-		select count(*) from TB_NOTICE WHERE PERMISSION = 1
+		select count(*) from TB_NOTICE WHERE PERMISSION = 1 
 		<!-- <if test="startDate != 0 and endDate != 0">
 			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
 		</if>
@@ -153,5 +153,9 @@
 		WHERE IDX = #{IDX} AND WHO = (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO})
 	</update>
 	
-
+	<!-- 가맹점 리스트 가져오기 -->
+	<select id="getShopList" parameterType="string" resultType="map">
+		SELECT * FROM TB_RECEIPT_SHOP
+		WHERE SHOP_BIZNO = #{bizno}
+	</select>
 </mapper>
