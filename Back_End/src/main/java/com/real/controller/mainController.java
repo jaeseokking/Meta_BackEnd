@@ -1,6 +1,7 @@
 package com.real.controller;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.real.dto.MemberVo;
 import com.real.jwt.JwtTokenProvider;
 import com.real.service.mainService;
+import com.theReal.kakaoArlimTalk.KakaoArlimTalk;
 
 
 @Controller
@@ -180,7 +182,7 @@ public class mainController {
 
 		String refreshToken = "";
 		
-		
+		System.out.println("LIST INFO ::::: " + listinfo);
 		Cookie [] cookies = request.getCookies();
 		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
 		String status = (String) checkToken.get("result");
@@ -192,6 +194,7 @@ public class mainController {
 			Map<String, Object> param = new HashMap<String, Object>();
 			listinfo.put("BIZNO", bizno);
 			
+			System.out.println(mainservice.totalcounts(listinfo));
 			return mainservice.totalcounts(listinfo);
 
 		//토큰 만료된경우
@@ -747,6 +750,98 @@ public class mainController {
 		
 		return result;
 	}
+	
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/stampIssuance", method=RequestMethod.POST)
+	public Map<String, Object> StampIssuance(@RequestBody Map<String, Object> stampinfo, HttpServletRequest request , HttpServletResponse response) throws Exception {
+		Map<String, Object> result  = new HashMap<String, Object>();
+		
+		String refreshToken = "";
+						
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		
+		if(checkToken.get("result").equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			int idx = jwtTokenProvider.getMemberIDX(refreshToken);
+			
+			stampinfo.put("bizno", bizno);
+			stampinfo.put("MEMBER_IDX", idx);
+			//임시 스탬프 코드
+			stampinfo.put("STAMPCODE", "CODE"+stampinfo.get("phoneNumber")+stampinfo.get("issuanceDate"));
+			System.out.println("STAMP INFO :::: :::: ::: "+stampinfo);
+			try {
+				
+				int insertResult = mainservice.stampIssuance(stampinfo);
+				if(insertResult != 1) {
+					result.put("result", "INSERT ERROR");
+				}else {
+					
+					KakaoArlimTalk kat = new KakaoArlimTalk();
+					
+					String phoneNumber = (String) stampinfo.get("phoneNumber");
+					String userKey = phoneNumber.substring(phoneNumber.length() -4, phoneNumber.length());
+					
+					Map<String, Object> alrimTalkMap = new HashMap<String, Object>();
+					// 알림톡 내용 설정
+					alrimTalkMap.put("userKey", userKey);
+					alrimTalkMap.put("shopName", "샵네임");
+					alrimTalkMap.put("branchName", "브런치네임");
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+					Date today = new Date();
+					alrimTalkMap.put("salesDate", dateFormat.format(today));
+					alrimTalkMap.put("totAmt", "1,000");
+					// 알림톡 발송	
+					try {
+						new KakaoArlimTalk().sendArlimTalk("01051242934", alrimTalkMap, "www.naver.com");
+						result.put("result", "SUCCESS");
+					}catch(Exception e) {
+						result.put("result", "KakaoArlimTalk Error");
+						e.printStackTrace();
+					}
+					
+					
+					
+				}
+				
+			} catch (Exception e) {
+				result.put("result", "INSERT ERROR");
+			}
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setMaxAge(30 * 60);
+			response.addCookie(refreshCookie);
+			result.put("result", "SUCCESS");
+		}else {
+			Cookie removeCookie = new Cookie("refresh_token", null);
+			removeCookie.setMaxAge(0);
+			response.addCookie(removeCookie);
+			
+			if(checkToken.get("result").equals("TOKEN EXPIRED")){
+				result.put("result", "SUCCESS");
+			}else {
+				result.put("result", "TOKEN NULL");
+			}
+		}
+		
+	
+    	return result;
+		
+	}
+	
+//	@ResponseBody
+//	@RequestMapping(value="/send/kakaoAlrimTalk", method=RequestMethod.POST)
+//	public  Map<String, Object> sendKakaoAlrimTalk()throws Exception{
+//		Map<String, Object> result  = new HashMap<String, Object>();
+//		
+//		return result;
+//	}
+//	
+	
+	
 	
 	
 

@@ -158,4 +158,10 @@
 		SELECT * FROM TB_RECEIPT_SHOP
 		WHERE SHOP_BIZNO = #{bizno}
 	</select>
+	
+	<!-- 스탬프 발급 -->
+	<insert id="stampIssuance" parameterType="map">
+		INSERT INTO TB_MANUAL_STAMP(SHOP_INFO_NO, USER_PHONE, STAMP_CODE, STAMP_CNT, STAMP_COMP_DTM, STAMP_END_DTM)
+		VALUES((SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{bizno} AND SHOP_INFO_NO = #{shop_info_no}), #{phoneNumber}, #{STAMPCODE}, #{stampAmount}, #{issuanceDate}, #{expirationDate})
+	</insert>
 </mapper>

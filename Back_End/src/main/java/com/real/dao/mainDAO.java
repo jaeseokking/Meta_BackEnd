@@ -101,6 +101,10 @@ public class mainDAO {
 	public List<String> getShopList(String bizno) {
 		return sqlSession.selectList(namespace+".getShopList",bizno);
 	}
+
+	public int stampIssuance(Map<String, Object> stampinfo) {
+		return sqlSession.insert(namespace+".stampIssuance", stampinfo);
+	}
 	
 	
 
