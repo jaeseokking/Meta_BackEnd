@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.real.dto.MemberVo;
 import com.real.jwt.JwtTokenProvider;
@@ -772,7 +773,7 @@ public class mainController {
 			stampinfo.put("MEMBER_IDX", idx);
 			//임시 스탬프 코드
 			stampinfo.put("STAMPCODE", "CODE"+stampinfo.get("phoneNumber")+stampinfo.get("issuanceDate"));
-			System.out.println("STAMP INFO :::: :::: ::: "+stampinfo);
+			System.out.println("STAMP INFO :::: :::: ::: " + stampinfo);
 			try {
 				
 				int insertResult = mainservice.stampIssuance(stampinfo);
@@ -832,15 +833,90 @@ public class mainController {
 		
 	}
 	
-//	@ResponseBody
-//	@RequestMapping(value="/send/kakaoAlrimTalk", method=RequestMethod.POST)
-//	public  Map<String, Object> sendKakaoAlrimTalk()throws Exception{
-//		Map<String, Object> result  = new HashMap<String, Object>();
-//		
-//		return result;
-//	}
-//	
+	@ResponseBody
+	@RequestMapping(value="/stampResend", method=RequestMethod.POST)
+	public Map<String, Object> StampResend(@RequestBody Map<String, Object> stampinfo, HttpServletRequest request , HttpServletResponse response) throws Exception {
+		Map<String, Object> result  = new HashMap<String, Object>();
+		
+		String refreshToken = "";
+						
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		
+		if(checkToken.get("result").equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			int idx = jwtTokenProvider.getMemberIDX(refreshToken);
+			
+			stampinfo.put("bizno", bizno);
+			stampinfo.put("MEMBER_IDX", idx);
+
+			try {
+
+				int stampCheck = mainservice.stampCheck(stampinfo);
+				System.out.println("STAMP CHECK DATA :::: " + stampCheck);
+				if(stampCheck < 1) {
+					result.put("result", "INSERT ERROR");
+				}else {
+					
+					KakaoArlimTalk kat = new KakaoArlimTalk();
+					
+					String phoneNumber = (String) stampinfo.get("phoneNumber");
+					String userKey = phoneNumber.substring(phoneNumber.length() -4, phoneNumber.length());
+					
+					Map<String, Object> alrimTalkMap = new HashMap<String, Object>();
+					// 알림톡 내용 설정
+					alrimTalkMap.put("userKey", userKey);
+					alrimTalkMap.put("shopName", "샵네임");
+					alrimTalkMap.put("branchName", "재발송 테스트");
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+					Date today = new Date();
+					alrimTalkMap.put("salesDate", dateFormat.format(today));
+					alrimTalkMap.put("totAmt", "1,000");
+					// 알림톡 발송	
+					try {
+						new KakaoArlimTalk().sendArlimTalk("01051242934", alrimTalkMap, "www.naver.com");
+						result.put("result", "SUCCESS");
+					}catch(Exception e) {
+						result.put("result", "KakaoArlimTalk Error");
+						e.printStackTrace();
+					}
+					
+					
+					
+				}
+				
+			} catch (Exception e) {
+				result.put("result", "INSERT ERROR");
+			}
+				
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setMaxAge(30 * 60);
+			response.addCookie(refreshCookie);
+			result.put("result", "SUCCESS");
+		}else {
+			Cookie removeCookie = new Cookie("refresh_token", null);
+			removeCookie.setMaxAge(0);
+			response.addCookie(removeCookie);
+			
+			if(checkToken.get("result").equals("TOKEN EXPIRED")){
+				result.put("result", "SUCCESS");
+			}else {
+				result.put("result", "TOKEN NULL");
+			}
+		}
+		
 	
+    	return result;
+		
+	}
+	
+	public ModelAndView home () {
+		ModelAndView mav = new ModelAndView("/home");
+		return mav;
+	}
+
 	
 	
 	

@@ -105,6 +105,16 @@ public class mainDAO {
 	public int stampIssuance(Map<String, Object> stampinfo) {
 		return sqlSession.insert(namespace+".stampIssuance", stampinfo);
 	}
+
+	public int stampCheck(Map<String, Object> stampinfo) {
+		return sqlSession.selectOne(namespace+".stampCheck", stampinfo);
+	}
+
+	public Map<String, Object> stampView(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".stampView", param);
+	}
+
+	
 	
 	
 

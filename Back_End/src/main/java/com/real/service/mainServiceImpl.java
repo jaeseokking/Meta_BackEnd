@@ -220,6 +220,21 @@ public class mainServiceImpl implements mainService {
 		return maindao.stampIssuance(stampinfo);
 	}
 
+
+
+
+	@Override
+	public int stampCheck(Map<String, Object> stampinfo) {
+		return maindao.stampCheck(stampinfo);
+	}
+
+
+
+	@Override
+	public Map<String, Object> stampView(Map<String, Object> param) {
+		return maindao.stampView(param);
+	}
+
 	
 	
 	

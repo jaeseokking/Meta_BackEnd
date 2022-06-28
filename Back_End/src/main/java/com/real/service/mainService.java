@@ -47,6 +47,10 @@ public interface mainService {
 
 	public int stampIssuance(Map<String, Object> stampinfo);
 
+	public int stampCheck(Map<String, Object> stampinfo);
+
+	public Map<String, Object> stampView(Map<String, Object> param);
+
 
 
 }

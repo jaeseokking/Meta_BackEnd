@@ -12,13 +12,28 @@
 	
 	<!-- 스탬프 리스트 개수  -->
 	<select id="stampCounts" parameterType="map" resultType="int">
-		select count(*) from TB_RECEIPT_STAMP where SHOP_INFO_NO = (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO} AND SHOP_INFO_NO = #{shop_info_no}) 
+	SELECT count(*)
+	FROM (
+	
+		select SEQ from TB_RECEIPT_STAMP where SHOP_INFO_NO = (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO} AND SHOP_INFO_NO = #{shop_info_no}) 
 		<if test="startDate != 0 and endDate != 0">
 			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
 		</if>
 		<if test="!'all'.equals(selectUse) and selectUse != null">
 			and STAMP_USE_YN = #{selectUse}
 		</if>
+		
+		UNION ALL
+		
+		select SEQ from TB_MANUAL_STAMP where SHOP_INFO_NO = (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO} AND SHOP_INFO_NO = #{shop_info_no}) 
+		<if test="startDate != 0 and endDate != 0">
+			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
+		</if>
+		<if test="!'all'.equals(selectUse) and selectUse != null">
+			and STAMP_USE_YN = #{selectUse}
+		</if>
+		
+	) a
 	</select> 
 	
 
@@ -60,7 +75,10 @@
 	
 	<!-- 스탬프 리스트 가져오기  -->
 	<select id="stampList" parameterType="map" resultType="map">
-		SELECT SEQ, STAMP_CODE, STAMP_COMP_DTM, STAMP_END_DTM, STAMP_CNT, STAMP_USE_YN FROM TB_RECEIPT_STAMP 
+	SELECT * 
+	FROM(
+		SELECT SEQ,STAMP_CODE,STAMP_COMP_DTM, STAMP_END_DTM, STAMP_CNT,STAMP_USE_YN , USER_KEY , "rs" as STAMP_TYPE
+		FROM TB_RECEIPT_STAMP 
 		WHERE  SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO} AND SHOP_INFO_NO = #{shop_info_no}) 
 		<if test="startDate != 0 and endDate != 0">
 			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
@@ -68,12 +86,34 @@
 		<if test="!'all'.equals(selectUse) and selectUse != null">
 			and STAMP_USE_YN = #{selectUse}
 		</if>
-		order by STAMP_COMP_DTM desc LIMIT #{firstpage} , 10  
+		
+		UNION ALL
+		
+		SELECT SEQ, STAMP_CODE,STAMP_COMP_DTM, STAMP_END_DTM, STAMP_CNT,STAMP_USE_YN , USER_PHONE , "ms" as STAMP_TYPE
+		FROM TB_MANUAL_STAMP
+		WHERE  SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO} AND SHOP_INFO_NO = #{shop_info_no}) 
+		<if test="startDate != 0 and endDate != 0">
+			and STAMP_COMP_DTM between DATE_FORMAT(STR_TO_DATE(${startDate},'%Y%m%d'),'%Y-%m-%d 00:00:00') and DATE_FORMAT(STR_TO_DATE(${endDate},'%Y%m%d'),'%Y-%m-%d 23:59:59') 
+		</if >
+		<if test="!'all'.equals(selectUse) and selectUse != null">
+			and STAMP_USE_YN = #{selectUse}
+		</if>
+	) a
+	order by STAMP_COMP_DTM desc LIMIT #{firstpage} , 10  
+	
 	</select> 
 	
 	<!-- 스템프 디테일 정보 가져오기 -->
 	<select id="getStampDetail" parameterType="map" resultType="map">
-		SELECT * FROM TB_RECEIPT_STAMP 
+		SELECT *
+		<choose>
+			<when test="STAMP_TYPE == 'rs'">
+				FROM TB_RECEIPT_STAMP 
+			</when>
+			<otherwise>
+				FROM TB_MANUAL_STAMP
+			</otherwise>
+		</choose> 
 		WHERE SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO}) AND SEQ = #{SEQ} AND STAMP_CODE = #{STAMP_CODE}
 	</select>
 	
@@ -164,4 +204,38 @@
 		INSERT INTO TB_MANUAL_STAMP(SHOP_INFO_NO, USER_PHONE, STAMP_CODE, STAMP_CNT, STAMP_COMP_DTM, STAMP_END_DTM)
 		VALUES((SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{bizno} AND SHOP_INFO_NO = #{shop_info_no}), #{phoneNumber}, #{STAMPCODE}, #{stampAmount}, #{issuanceDate}, #{expirationDate})
 	</insert>
+	
+	<!-- 스탬프 재전송 -->
+	<select id="stampCheck" parameterType="map" resultType="int">
+		SELECT count(*) FROM TB_MANUAL_STAMP WHERE USER_PHONE = #{phoneNumber} AND STAMP_USE_YN = 'N' AND SHOP_INFO_NO = #{shop_info_no}
+	</select>
+	
+	<!-- 스탬프 뷰페이지 데이터 -->
+	<select id="stampView" parameterType="map" resultType="map">
+	
+		SELECT * 
+		FROM(
+			SELECT SEQ,STAMP_CODE,STAMP_COMP_DTM, STAMP_END_DTM, STAMP_CNT,STAMP_USE_YN , USER_KEY 
+			FROM TB_RECEIPT_STAMP 
+			WHERE  SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO} AND SHOP_INFO_NO = #{SHOP_INFO_NO})
+				<![CDATA[
+					and DATE(NOW()) <= DATE(STAMP_END_DTM) 					
+				]]> 			
+				and STAMP_USE_YN = 'N'
+				AND USER_KEY = #{USER_KEY}
+		
+			UNION ALL
+			
+			SELECT SEQ, STAMP_CODE,STAMP_COMP_DTM, STAMP_END_DTM, STAMP_CNT,STAMP_USE_YN , USER_PHONE
+			FROM TB_MANUAL_STAMP
+			WHERE  SHOP_INFO_NO IN (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{BIZNO} AND SHOP_INFO_NO = #{SHOP_INFO_NO}) 
+				<![CDATA[
+					and DATE(NOW()) <= DATE(STAMP_END_DTM) 					
+				]]> 
+				and STAMP_USE_YN = 'N'
+				AND USER_PHONE = #{USER_KEY}
+				
+		) a
+	</select>
+	
 </mapper>
