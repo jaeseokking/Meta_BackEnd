@@ -110,8 +110,12 @@ public class mainDAO {
 		return sqlSession.selectOne(namespace+".stampCheck", stampinfo);
 	}
 
-	public Map<String, Object> stampView(Map<String, Object> param) {
-		return sqlSession.selectOne(namespace+".stampView", param);
+	public int stampCount(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".stampCount", param);
+	}
+
+	public Map<String, Object> getShopInfo(Map<String, Object> param) {
+		return sqlSession.selectOne(namespace+".getShopInfo", param);
 	}
 
 	

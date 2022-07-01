@@ -211,9 +211,8 @@
 	</select>
 	
 	<!-- 스탬프 뷰페이지 데이터 -->
-	<select id="stampView" parameterType="map" resultType="map">
-	
-		SELECT * 
+	<select id="stampCount" parameterType="map" resultType="int">
+		SELECT  SUM(STAMP_CNT) AS TOTAL_COUNTS
 		FROM(
 			SELECT SEQ,STAMP_CODE,STAMP_COMP_DTM, STAMP_END_DTM, STAMP_CNT,STAMP_USE_YN , USER_KEY 
 			FROM TB_RECEIPT_STAMP 
@@ -234,8 +233,17 @@
 				]]> 
 				and STAMP_USE_YN = 'N'
 				AND USER_PHONE = #{USER_KEY}
-				
 		) a
+	</select>
+	
+	
+	
+	<!-- 해당 가맹점의 정보 가져오기 -->
+	<select id="getShopInfo" parameterType="map" resultType="map">
+		SELECT b.SHOP_BIZNO, b.SHOP_NAME, b.SHOP_BRANCH, b.SHOP_ADDR, b.SHOP_TEL_NUM, b.SHOP_CEO, c.COMPLETION_STAMP, c.REWARD
+		FROM TB_RECEIPT_SHOP b, TB_STAMP_CONDITION c
+		WHERE b.SHOP_INFO_NO = c.SHOP_INFO_NO AND b.SHOP_BIZNO = #{BIZNO} AND b.SHOP_INFO_NO = #{SHOP_INFO_NO} 
+
 	</select>
 	
 </mapper>

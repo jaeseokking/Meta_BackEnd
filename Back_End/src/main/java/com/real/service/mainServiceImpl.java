@@ -231,8 +231,15 @@ public class mainServiceImpl implements mainService {
 
 
 	@Override
-	public Map<String, Object> stampView(Map<String, Object> param) {
-		return maindao.stampView(param);
+	public int stampCount(Map<String, Object> param) {
+		return maindao.stampCount(param);
+	}
+
+
+
+	@Override
+	public Map<String, Object> getShopInfo(Map<String, Object> param) {
+		return maindao.getShopInfo(param);
 	}
 
 	

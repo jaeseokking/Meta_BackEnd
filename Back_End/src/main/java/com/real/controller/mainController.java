@@ -1,5 +1,6 @@
 package com.real.controller;
 
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ import com.real.jwt.JwtTokenProvider;
 import com.real.service.mainService;
 import com.theReal.kakaoArlimTalk.KakaoArlimTalk;
 
+import com.real.util.AES256;
+
 
 @Controller
 @RequestMapping("/api")
@@ -45,7 +48,7 @@ public class mainController {
     private JwtTokenProvider jwtTokenProvider;
 
     
-    
+    static private AES256 AES = new AES256("STAMP_REAL123456");
     /**
      * 로그아웃
      * 
@@ -722,7 +725,7 @@ public class mainController {
 		if(checkToken.get("result").equals("TOKEN VALID")) {
 			refreshToken = (String)checkToken.get("refreshToken");
 			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
-
+			
 
 			try {
 				result.put("shopList", mainservice.getShopList(bizno));
@@ -755,12 +758,17 @@ public class mainController {
 	
 	
 	@ResponseBody
-	@RequestMapping(value="/stampIssuance", method=RequestMethod.POST)
+	@RequestMapping(value="/issue/stamp", method=RequestMethod.POST)
 	public Map<String, Object> StampIssuance(@RequestBody Map<String, Object> stampinfo, HttpServletRequest request , HttpServletResponse response) throws Exception {
 		Map<String, Object> result  = new HashMap<String, Object>();
 		
 		String refreshToken = "";
-						
+		
+		String reqUserKey;
+		String queryString;
+		String stampUrl;
+		String viewDomain = "localhost:8080/stampPage";				
+		
 		Cookie [] cookies = request.getCookies();
 		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
 		
@@ -771,6 +779,7 @@ public class mainController {
 			
 			stampinfo.put("bizno", bizno);
 			stampinfo.put("MEMBER_IDX", idx);
+			
 			//임시 스탬프 코드
 			stampinfo.put("STAMPCODE", "CODE"+stampinfo.get("phoneNumber")+stampinfo.get("issuanceDate"));
 			System.out.println("STAMP INFO :::: :::: ::: " + stampinfo);
@@ -786,18 +795,32 @@ public class mainController {
 					String phoneNumber = (String) stampinfo.get("phoneNumber");
 					String userKey = phoneNumber.substring(phoneNumber.length() -4, phoneNumber.length());
 					
+					Map<String, Object> param = new HashMap<String, Object>();
+					param.put("SHOP_INFO_NO", stampinfo.get("shop_info_no"));
+					param.put("BIZNO", bizno);
+					
+					Map<String, Object> shopinfo = mainservice.getShopInfo(param);
+
 					Map<String, Object> alrimTalkMap = new HashMap<String, Object>();
+					
+					//reqUserKey = AES.encryptStringToBase64(userKey);
+					queryString = phoneNumber + "|" + bizno + "|" + stampinfo.get("shop_info_no").toString();
+					stampUrl = viewDomain + "?param=" + URLEncoder.encode(AES.encryptStringToBase64(queryString), "UTF-8");
+
 					// 알림톡 내용 설정
 					alrimTalkMap.put("userKey", userKey);
-					alrimTalkMap.put("shopName", "샵네임");
-					alrimTalkMap.put("branchName", "브런치네임");
+					alrimTalkMap.put("shopName", shopinfo.get("SHOP_NAME"));
+					alrimTalkMap.put("branchName", shopinfo.get("SHOP_BRANCH"));
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 					Date today = new Date();
-					alrimTalkMap.put("salesDate", dateFormat.format(today));
-					alrimTalkMap.put("totAmt", "1,000");
+					
+
 					// 알림톡 발송	
 					try {
-						new KakaoArlimTalk().sendArlimTalk("01051242934", alrimTalkMap, "www.naver.com");
+						System.out.println("스탬프 인포 :::  " + stampinfo);
+						
+						int shop_info_no = Integer.parseInt(String.valueOf(stampinfo.get("shop_info_no")));
+						new KakaoArlimTalk().issueStamp("01051242934", alrimTalkMap, stampUrl );
 						result.put("result", "SUCCESS");
 					}catch(Exception e) {
 						result.put("result", "KakaoArlimTalk Error");
@@ -809,6 +832,7 @@ public class mainController {
 				}
 				
 			} catch (Exception e) {
+				System.out.println(e);
 				result.put("result", "INSERT ERROR");
 			}
 			
@@ -834,12 +858,17 @@ public class mainController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="/stampResend", method=RequestMethod.POST)
+	@RequestMapping(value="/stamp/resend", method=RequestMethod.POST)
 	public Map<String, Object> StampResend(@RequestBody Map<String, Object> stampinfo, HttpServletRequest request , HttpServletResponse response) throws Exception {
 		Map<String, Object> result  = new HashMap<String, Object>();
 		
 		String refreshToken = "";
-						
+		
+		String reqUserKey;
+		String queryString;
+		String stampUrl;
+		String viewDomain = "localhost:8080/stampPage";				
+
 		Cookie [] cookies = request.getCookies();
 		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
 		
@@ -864,18 +893,31 @@ public class mainController {
 					String phoneNumber = (String) stampinfo.get("phoneNumber");
 					String userKey = phoneNumber.substring(phoneNumber.length() -4, phoneNumber.length());
 					
+					Map<String, Object> param = new HashMap<String, Object>();
+					param.put("SHOP_INFO_NO", stampinfo.get("shop_info_no"));
+					param.put("BIZNO", bizno);
+					
+					Map<String, Object> shopinfo = mainservice.getShopInfo(param);
+
 					Map<String, Object> alrimTalkMap = new HashMap<String, Object>();
+					
+					queryString = phoneNumber + "|" + bizno + "|" + stampinfo.get("shop_info_no").toString();
+					stampUrl = viewDomain + "?param=" + URLEncoder.encode(AES.encryptStringToBase64(queryString), "UTF-8");
+					
+										
 					// 알림톡 내용 설정
 					alrimTalkMap.put("userKey", userKey);
-					alrimTalkMap.put("shopName", "샵네임");
-					alrimTalkMap.put("branchName", "재발송 테스트");
+					alrimTalkMap.put("shopName", shopinfo.get("SHOP_NAME"));
+					alrimTalkMap.put("branchName", shopinfo.get("SHOP_BRANCH"));
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 					Date today = new Date();
-					alrimTalkMap.put("salesDate", dateFormat.format(today));
-					alrimTalkMap.put("totAmt", "1,000");
+					
 					// 알림톡 발송	
 					try {
-						new KakaoArlimTalk().sendArlimTalk("01051242934", alrimTalkMap, "www.naver.com");
+						int shop_info_no = Integer.parseInt(String.valueOf(stampinfo.get("shop_info_no")));
+						new KakaoArlimTalk().resendStamp("01051242934", alrimTalkMap, stampUrl );
+						//new KakaoArlimTalk().sendArlimTalk(phoneNumber, alrimTalkMap, "www.naver.com");
+
 						result.put("result", "SUCCESS");
 					}catch(Exception e) {
 						result.put("result", "KakaoArlimTalk Error");
