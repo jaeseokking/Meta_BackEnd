@@ -1,0 +1,261 @@
+@CHARSET "UTF-8";
+@import url(http://fonts.googleapis.com/earlyaccess/hanna.css); 
+html{
+	
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family : 'hanna';
+}
+ul, li{
+    list-style: none;
+}
+body{
+    background-color: #848484;
+}
+.stamp{
+	justify-content : center;
+	align-items : center;
+	display : inline-flex;
+	flex-direction : row;
+
+
+ 	@media screen and (max-width: 450px){
+   		margin-left : 10vw;
+ 	}
+	
+}
+
+.stamp img {
+	width : 150px;
+	height : 150px;
+}
+
+.stamp span {
+	font-size : 40px;
+	margin-left : 10px;
+}
+
+#wrap{
+    max-width: 450px;
+    margin: 0 auto;
+    border-radius: 5px;
+    background-color: #fff;
+    padding: 10px 20px;
+    font-size: 12px;
+}
+header{
+    text-align: center;
+    margin : 20px;
+}
+header .title{
+    margin: 40px 0;
+    text-align : center;
+    font-size : 40px;
+}
+#container{
+    
+}
+.ph_shop{
+    height: auto;
+    text-align: center;
+    border-bottom: 1px dashed #222;
+    padding-bottom: 30px;
+}
+.ph_shop p{
+    text-align: center;
+}
+.ticket{
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 1.8em;
+}
+.ph_date{
+    
+}
+.ph_date p span{
+    float: right;
+}
+.ph_tit{
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+.ph_sale{
+    border-bottom: 1px dashed #222;
+    padding-bottom: 10px;
+}
+.ph_number{
+    font-weight: bold;
+    font-size: 1.8em;
+}
+.ph_number p{
+    font-weight: bold;
+}
+.ph_sale span{
+    font-size: 1.1em;
+}
+.ph_number p{
+    float: right;
+}
+.ph_saleinfo{
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.saleslist{
+    padding-top: 10px;
+}
+.list_tit{
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    font-size: 100%;
+}
+.margintop{
+    margin-top: 10px;
+}
+.list_info{
+    justify-content: space-between;
+    border-bottom: 1px dashed #222;
+    font-size: 100%;
+    padding-bottom: 10px;
+    
+}
+.list_info_cash{
+    font-size: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.sale_list{
+    border-bottom: 1px dashed #222;
+    padding-bottom: 10px;
+}
+.sale_tit{
+    text-align: center;
+}
+.sale{
+    font-weight: b
+}
+.sale p{
+    float: right;
+}
+.psale{
+    padding-left: 30px;
+}
+.psale p{
+    float: right;
+}
+
+.list_bcash{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #222;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    font-weight: bold;
+    font-size: 100%;
+}
+.list_cash{
+    justify-content: space-between;
+    border-bottom: 1px dashed #222;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+.list_cash p{
+    display: flex;
+    justify-content: space-between;
+}
+.list_hcash{
+    padding-left: 10px;
+}
+.cash_receipt{
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-bottom: 1px dashed #222;
+}
+.cash_receipt p span{
+    float: right;
+}
+.ph_membership{
+    padding-top: 10px;
+    border-bottom: 1px dashed #222;
+    padding-bottom: 10px;
+}
+.ph_memtit{
+    text-align: center;
+}
+.ph_memcard p{
+    float: right;
+}
+.ph_mempoint{
+   float: left;
+    width: 49%;
+    margin-right: 2%;
+}
+.ph_mempoint p{
+    float: right;
+}
+.ph_memtotal{
+    display: flex;
+    justify-content:space-between;
+    width: 49%;
+}
+.ph_memtotal p{
+    
+}
+.service_center{
+    text-align: center;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-bottom: 1px dashed #222;
+}
+.etcinfo p{
+    text-align: center;
+    font-weight: bold;
+    padding-top: 10px;
+}
+.nutrition{
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #222;
+}
+.origin{
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-bottom: 1px dashed #222;
+}
+.allergy{
+    padding-top: 10px;
+}
+.coupon{
+    padding-bottom: 30px;
+}
+.coupon_tit{
+    text-align: center;
+    padding-bottom: 20px;
+}
+.coupon_tit p{
+    background-color: #222;
+    color: #fff;
+    font-weight: bold;
+}
+.coupon_info{
+    display: flex;
+}
+.buttonContainer {
+	text-align : center;
+}
+
+.useButton {
+	padding : 10px 20px;
+	border : 0px;
+	border-radius : 20px;
+}
+
+

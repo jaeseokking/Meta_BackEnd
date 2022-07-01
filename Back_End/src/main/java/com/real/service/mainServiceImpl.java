@@ -213,6 +213,35 @@ public class mainServiceImpl implements mainService {
 		return maindao.getShopList(bizno);
 	}
 
+
+
+	@Override
+	public int stampIssuance(Map<String, Object> stampinfo) {
+		return maindao.stampIssuance(stampinfo);
+	}
+
+
+
+
+	@Override
+	public int stampCheck(Map<String, Object> stampinfo) {
+		return maindao.stampCheck(stampinfo);
+	}
+
+
+
+	@Override
+	public int stampCount(Map<String, Object> param) {
+		return maindao.stampCount(param);
+	}
+
+
+
+	@Override
+	public Map<String, Object> getShopInfo(Map<String, Object> param) {
+		return maindao.getShopInfo(param);
+	}
+
 	
 	
 	

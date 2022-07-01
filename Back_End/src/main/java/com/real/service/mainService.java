@@ -45,6 +45,14 @@ public interface mainService {
 
 	public List<String> getShopList(String bizno);
 
+	public int stampIssuance(Map<String, Object> stampinfo);
+
+	public int stampCheck(Map<String, Object> stampinfo);
+
+	public int stampCount(Map<String, Object> param);
+
+	public Map<String, Object> getShopInfo(Map<String, Object> param);
+
 
 
 }

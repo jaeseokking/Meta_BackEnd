@@ -36,17 +36,17 @@ public class JwtTokenProvider {
 //	} 
 //	
 	
-	// 토큰에서 회원 정보 추출 
+	// 토큰에서 회원 사업자번호 추출 
 	public String getMemberBizno(String token) { 
 		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject(); 
 	} 
 	
-	// 토큰에서 회원 정보 추출 
+	// 토큰에서 회원 IDX 추출 
 	public int getMemberIDX(String token) { 
-			return (Integer) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("IDX"); 
-		} 
+		return (Integer) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("IDX"); 
+	} 
 	
-	
+		
 	// 토큰의 유효성 + 만료일자 확인 
 	public boolean validateToken(String jwtToken) { 
 		try { 
