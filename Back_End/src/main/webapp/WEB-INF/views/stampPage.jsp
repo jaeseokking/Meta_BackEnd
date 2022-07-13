@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>모바일영수증</title>
+    <title>스탬프 확인</title>
     <link rel="stylesheet" href="/resources/css/style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <script src="/resources/static/jquery-3.6.0.min.js"></script>
@@ -14,10 +14,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 </head>
 <script>
+	function searchParam(key){
+		return new URLSearchParams(location.search).get(key);
+	}
+
+
 	function useButton(){
-		console.log('사용하기 버튼 클릭');
-		
-		
+		if(confirm("사용하시겠습니까?") == true){
+			const param = searchParam("param");
+			if(param != null && param != ""){
+				$.ajax({ 
+					url : "api/stamp/use",
+					type : 'POST',
+					data : {
+						param : param,
+						completionStamp : "${shopInfo.COMPLETION_STAMP}",
+						userStampList: "${userStampList}"
+					},
+					success:function(data){
+						window.location.reload();
+						
+						
+					}
+			
+				})  
+			}
+			
+			
+		}
 	}
 </script>
 
@@ -83,10 +107,15 @@
       
             
             </div>  
-            	
-            <div class="buttonContainer">
-            	<button class="useButton" onclick="useButton()">사용하기</button>
+            <div>
+            	${userStampList}
             </div>
+            <c:if test="${stampCount  >= shopInfo.COMPLETION_STAMP}">
+               <div class="buttonContainer">
+            		<button class="useButton" onclick="useButton()">사용하기</button>
+           	    </div>
+            </c:if>
+          
              
         </div><!--#container-->
     </div><!--#wrap-->

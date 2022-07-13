@@ -231,8 +231,8 @@ public class mainServiceImpl implements mainService {
 
 
 	@Override
-	public int stampCount(Map<String, Object> param) {
-		return maindao.stampCount(param);
+	public List<Map<String, Object>> userStampList(Map<String, Object> param) {
+		return maindao.userStampList(param);
 	}
 
 
@@ -242,7 +242,20 @@ public class mainServiceImpl implements mainService {
 		return maindao.getShopInfo(param);
 	}
 
-	
+
+
+	@Override
+	public void useStamp(Map<String, Object> value, String type) {
+		if(type == "use") {
+			maindao.useStamp(value);
+		}else if(type == "deduction") {
+			maindao.deductionStamp(value);
+		}
+	}
+
+
+
+
 	
 	
 	

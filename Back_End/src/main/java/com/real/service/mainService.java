@@ -49,9 +49,12 @@ public interface mainService {
 
 	public int stampCheck(Map<String, Object> stampinfo);
 
-	public int stampCount(Map<String, Object> param);
+	public List<Map<String, Object>> userStampList(Map<String, Object> param);
 
 	public Map<String, Object> getShopInfo(Map<String, Object> param);
+
+	public void useStamp(Map<String, Object> value, String type);
+
 
 
 
