@@ -20,7 +20,7 @@ public class KakaoArlimTalk {
 	
 	private static String AUTH = "";
 	private static final String SENDER_KEY = "fe76181baedfe2179b1455492945156ec89c7de8";
-	private static final String TMPL_CD_ER = "K469_0003";
+//	private static final String TMPL_CD_ER = "K469_0003";
 	private static final String TMPL_CD_RESEND = "K469_0010";
 	private static final String TMPL_CD_ISSUE = "K469_0011";
 	private static final String SEND_URL = "https://kko.emfo-api.co.kr:8080/rest/kakao/send";

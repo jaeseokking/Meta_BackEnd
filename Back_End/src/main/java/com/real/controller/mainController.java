@@ -1009,7 +1009,7 @@ public class mainController {
 				if(completionStamp > 0) {
 					mainservice.useStamp(value, "use");
 				}else if(completionStamp < 0) {
-					value.put("decutionCount", Math.abs(completionStamp));
+					value.put("dedutionCount", Math.abs(completionStamp));
 					mainservice.useStamp(value, "deduction");
 					break;
 				}else {
