@@ -22,10 +22,12 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -957,6 +959,74 @@ public class mainController {
 	public ModelAndView home () {
 		ModelAndView mav = new ModelAndView("/home");
 		return mav;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/stamp/use", method=RequestMethod.POST)
+	public int useStamp(@RequestParam("param") String encryptedParam) {
+		String param = "";
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("stampPage");
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		param = AES.decryptBase64String(encryptedParam); 			
+		
+		String[] arr = param.split("\\|");
+		
+		System.out.println(arr[0]);
+		System.out.println(arr[1]);
+		System.out.println(arr[2]);
+		
+		map.put("USER_KEY", arr[0]);
+		map.put("BIZNO", arr[1]);
+		map.put("SHOP_INFO_NO", arr[2]);		
+		
+		//사업자의 정보가져오기
+		Map<String, Object> shopInfo = mainservice.getShopInfo(map);
+		System.out.println("SHOP INFO ::: " + shopInfo);
+		mav.addObject("shopInfo", shopInfo);
+		List<Map<String, Object>> userStampList = new ArrayList<Map<String, Object>>(); 
+		
+		
+		//해당 사용자의 스탬프 리스트 가져오기
+		userStampList = mainservice.userStampList(map);
+		System.out.println(userStampList);
+		
+		
+		int stampCount = 0;
+		
+		for(Map<String, Object> value : userStampList) {
+			System.out.println(value.get("STAMP_CNT"));
+			stampCount += (Integer) value.get("STAMP_CNT");
+		}
+		int completionStamp = (Integer) shopInfo.get("COMPLETION_STAMP");
+		
+		if(stampCount >= completionStamp) {
+			for(Map<String, Object> value : userStampList) {
+				System.out.println(value.get("STAMP_CNT"));
+				completionStamp -= (Integer) value.get("STAMP_CNT");
+				
+				if(completionStamp > 0) {
+					mainservice.useStamp(value, "use");
+				}else if(completionStamp < 0) {
+					value.put("decutionCount", Math.abs(completionStamp));
+					mainservice.useStamp(value, "deduction");
+					break;
+				}else {
+					mainservice.useStamp(value, "use");
+					break;
+				}
+			}
+			
+			return 0;
+		}else {
+			System.out.println("스탬프 개수 부족");
+			return 1;
+		}
+		
+
+		
+		
 	}
 
 	

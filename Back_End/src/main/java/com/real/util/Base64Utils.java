@@ -128,7 +128,9 @@ public class Base64Utils {
             decodedBuf[destIndex] = (byte) ( ((data[srcIndex+1] << 4) & 255) | 
                 ((data[srcIndex+2] >>> 2) & 017) ); 
 	} catch(Exception e) {
-		e.printStackTrace();
+		//e.printStackTrace();
+		System.out.println("잘못된 파라미터 길이");
+		return null;
 	}
 	return decodedBuf;
     } 

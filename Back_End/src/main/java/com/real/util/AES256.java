@@ -122,7 +122,9 @@ public class AES256 {
 				byte[] plainBytes = cipher.doFinal(chiperBytes);
 				plainString = new String(plainBytes);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				//ex.printStackTrace();
+				System.out.println("잘못된 파라미터");
+				return null;
 			}
 			return plainString;
 		}
@@ -132,10 +134,17 @@ public class AES256 {
 			if (StringUtil.isNull(cipherBase64String)) {
 				return null;
 			}
-			byte[] cipherBytes = Base64Utils.base64Decode(cipherBase64String);
-			String plainString = decryptBytes(cipherBytes);
-			plainString = plainString.trim();
-			return plainString;
+			
+			try {
+				byte[] cipherBytes = Base64Utils.base64Decode(cipherBase64String);
+				String plainString = decryptBytes(cipherBytes);
+				plainString = plainString.trim();
+				return plainString;
+			}catch (Exception e) {
+				System.out.println("잘못된 param");
+				return null;
+			}
+			
 		}
 
 		public static String decrypt(String key, String data) throws Exception {
