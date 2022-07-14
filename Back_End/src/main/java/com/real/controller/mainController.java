@@ -36,6 +36,7 @@ import com.real.jwt.JwtTokenProvider;
 import com.real.service.mainService;
 import com.theReal.kakaoArlimTalk.KakaoArlimTalk;
 
+
 import com.real.util.AES256;
 
 
@@ -1029,6 +1030,46 @@ public class mainController {
 		
 	}
 
+	@ResponseBody
+	@RequestMapping(value="/template/insert", method=RequestMethod.POST)
+	public int templateInsert(@RequestBody Map<String, Object> templateInfo, HttpServletRequest request , HttpServletResponse response) throws Exception {	
+		String refreshToken = "";
+		int insert_result;
+
+		Cookie [] cookies = request.getCookies();
+		Map<String , Object> checkToken = jwtTokenProvider.getRefreshToken(cookies);
+		
+		if(checkToken.get("result").equals("TOKEN VALID")) {
+			refreshToken = (String)checkToken.get("refreshToken");
+			String bizno = jwtTokenProvider.getMemberBizno(refreshToken);
+			int idx = jwtTokenProvider.getMemberIDX(refreshToken);
+			
+			templateInfo.put("bizno", bizno);
+
+			try {
+
+				insert_result = mainservice.templateInsert(templateInfo);
+				
+			} catch (Exception e) {
+				insert_result = 0;
+			}
+				
+			
+			Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+			refreshCookie.setMaxAge(30 * 60);
+			response.addCookie(refreshCookie);
+		}else {
+			Cookie removeCookie = new Cookie("refresh_token", null);
+			removeCookie.setMaxAge(0);
+			response.addCookie(removeCookie);
+			
+			insert_result = -1;
+			
+		}
+		
+		return insert_result;	
+		
+	}
 	
 	
 	

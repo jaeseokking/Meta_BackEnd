@@ -273,6 +273,16 @@
 		</if>
 	</update>
 	
+	<insert id="templateInsert">
+		INSERT INTO TB_TEMPLATE
+		(
+			TITLE, MESSAGE, REG_DATE, SHOP_INFO_NO
+		)
+		VALUES
+		(
+			#{title}, #{message}, now(),  (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{bizno} AND SHOP_INFO_NO = #{shop_info_no}) 
+		)
+	</insert>
 	
 	
 	

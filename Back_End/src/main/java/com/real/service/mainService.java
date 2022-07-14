@@ -55,6 +55,8 @@ public interface mainService {
 
 	public void useStamp(Map<String, Object> value, String type);
 
+	public int templateInsert(Map<String, Object> templateInfo);
+
 
 
 

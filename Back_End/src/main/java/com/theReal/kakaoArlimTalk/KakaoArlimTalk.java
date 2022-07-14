@@ -244,7 +244,7 @@ public class KakaoArlimTalk {
 	
 	private String phoneNum(String phone) {
 		
-		String result = "";
+		String result = ""; 
 		
 		result = phone.replace("-", "");
 		
