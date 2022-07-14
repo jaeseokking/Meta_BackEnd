@@ -126,6 +126,10 @@ public class mainDAO {
 		sqlSession.update(namespace+".deductionStamp", value);
 	}
 
+	public int templateInsert(Map<String, Object> templateInfo) {
+		return sqlSession.insert(namespace+ ".templateInsert", templateInfo);
+	}
+
 	
 	
 	

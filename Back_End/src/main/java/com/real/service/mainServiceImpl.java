@@ -255,6 +255,13 @@ public class mainServiceImpl implements mainService {
 
 
 
+	@Override
+	public int templateInsert(Map<String, Object> templateInfo) {
+		return maindao.templateInsert(templateInfo);
+	}
+
+
+
 
 	
 	

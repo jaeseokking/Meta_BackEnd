@@ -263,16 +263,26 @@
 	<update id="deductionStamp" parameterType="map">
 		<if test="TABLENAME == 'TRS'">
 			UPDATE TB_RECEIPT_STAMP
-			SET STAMP_CNT = #{decutionCount}
+			SET STAMP_CNT = #{dedutionCount}
 			WHERE USER_KEY = #{USER_KEY} AND STAMP_CODE = #{STAMP_CODE} AND SEQ = #{SEQ}
 		</if>
 		<if test="TABLENAME == 'TMS'">
 			UPDATE TB_MANUAL_STAMP
-			SET STAMP_CNT = #{decutionCount}
+			SET STAMP_CNT = #{dedutionCount}
 			WHERE USER_PHONE = #{USER_KEY} AND STAMP_CODE = #{STAMP_CODE} AND SEQ = #{SEQ}
 		</if>
 	</update>
 	
+	<insert id="templateInsert">
+		INSERT INTO TB_TEMPLATE
+		(
+			TITLE, MESSAGE, REG_DATE, SHOP_INFO_NO
+		)
+		VALUES
+		(
+			#{title}, #{message}, now(),  (SELECT SHOP_INFO_NO FROM TB_RECEIPT_SHOP WHERE SHOP_BIZNO = #{bizno} AND SHOP_INFO_NO = #{shop_info_no}) 
+		)
+	</insert>
 	
 	
 	
